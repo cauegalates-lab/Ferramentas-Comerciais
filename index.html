@@ -1149,6 +1149,12 @@
 .tool-sim .campo-filtro-tecnico:focus {border-color: var(--azul);
       box-shadow: 0 0 0 4px rgba(18, 63, 130, 0.10);}
 
+.tool-sim select.campo-filtro-tecnico {
+      cursor: pointer;
+      appearance: auto;
+      padding-right: 12px;
+}
+
 
     
 .tool-sim .lista {min-height: 0;
@@ -3197,6 +3203,7 @@ body {
 }
 .fc-root,
 .fc-main,
+#areaInicio,
 #areaLinks,
 #areaSimulador,
 #areaCampanhas {
@@ -3303,35 +3310,47 @@ body {
   justify-content: center !important;
   gap: 8px !important;
   flex-wrap: nowrap !important;
-  margin: 0 auto 16px !important;
+  margin: -2px auto 18px !important;
   padding: 0 !important;
   overflow-x: auto !important;
+  border-bottom: 0 !important;
 }
 .tool-links .links-tabs > .nav-btn {
+  position: relative !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex: 0 0 auto !important;
-  width: auto !important;
-  min-width: 124px !important;
-  max-width: none !important;
-  padding: 7px 12px !important;
+  width: 132px !important;
+  min-width: 132px !important;
+  max-width: 132px !important;
+  height: 30px !important;
+  padding: 0 12px !important;
   margin: 0 !important;
-  border: none !important;
-  border-radius: 6px !important;
-  background: #e7eef8 !important;
+  border: 1px solid rgba(0, 51, 102, .08) !important;
+  border-radius: 7px !important;
+  background: #e7eef7 !important;
   color: #003366 !important;
   box-shadow: none !important;
   font-size: 12px !important;
-  font-weight: 600 !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
   text-align: center !important;
   white-space: nowrap !important;
+  transition: .18s ease !important;
+}
+.tool-links .links-tabs > .nav-btn::after {
+  display: none !important;
 }
 .tool-links .links-tabs > .nav-btn:hover,
 .tool-links .links-tabs > .nav-btn.active {
-  background: #ff7a00 !important;
+  background: #ff6d01 !important;
   color: #ffffff !important;
-  box-shadow: 0 6px 16px rgba(255,122,0,.18) !important;
+  border-color: #ff6d01 !important;
+  box-shadow: 0 5px 12px rgba(255, 109, 1, .16) !important;
+}
+.tool-links .links-tabs > .nav-btn.active::after {
+  display: none !important;
 }
 .tool-links .main {
   width: 100% !important;
@@ -3439,11 +3458,19 @@ body {
 }
 @media (max-width: 900px) {
   .fc-header-inner {
+    display: flex !important;
     padding: 12px 14px !important;
     flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 12px !important;
+  }
+  .fc-header-inner::after {
+    display: none !important;
   }
   .fc-brand {
+    width: auto !important;
     min-width: 0 !important;
+    justify-content: center !important;
   }
   .fc-brand-logo {
     width: 136px !important;
@@ -3451,6 +3478,8 @@ body {
   }
   .fc-menu {
     flex: 1 1 100% !important;
+    width: 100% !important;
+    justify-content: center !important;
   }
 }
 @media (max-width: 760px) {
@@ -3478,6 +3507,287 @@ body {
 .fc-root button:not(.fc-menu-button):hover,
 .tool-section button:hover {
   box-shadow: none !important;
+}
+
+
+
+.tool-home {
+  width: 100% !important;
+  min-height: calc(100vh - 72px) !important;
+  background: transparent !important;
+  padding: 0 0 42px !important;
+  color: var(--fc-text) !important;
+}
+.tool-home .home-wrap {
+  width: 100% !important;
+  margin: 0 auto !important;
+  display: block !important;
+}
+.tool-home .home-hero {
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: 330px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 54px 20px 58px !important;
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.06) 0 8%, transparent 8% 100%),
+    linear-gradient(135deg, #003366 0%, #08294f 48%, #071d35 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 42px rgba(0,31,68,.16) !important;
+}
+.tool-home .home-hero::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    linear-gradient(120deg, transparent 0 26%, rgba(255,255,255,.065) 26% 32%, transparent 32% 100%),
+    linear-gradient(105deg, transparent 0 74%, rgba(255,255,255,.055) 74% 79%, transparent 79% 100%) !important;
+  pointer-events: none !important;
+}
+.tool-home .home-hero::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 5% !important;
+  top: 10% !important;
+  width: 360px !important;
+  height: 360px !important;
+  border: 38px solid rgba(255,255,255,.045) !important;
+  transform: rotate(24deg) !important;
+  pointer-events: none !important;
+}
+.tool-home .home-hero-content {
+  position: relative !important;
+  z-index: 1 !important;
+  width: min(860px, 100%) !important;
+  margin: 0 auto !important;
+}
+.tool-home .home-eyebrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 8px 16px !important;
+  margin-bottom: 20px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.08) !important;
+  border: 1px solid rgba(255,255,255,.26) !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .02em !important;
+}
+.tool-home .home-eyebrow::before {
+  content: "" !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 999px !important;
+  background: #ff9700 !important;
+  box-shadow: 0 0 0 3px rgba(255,151,0,.12) !important;
+}
+.tool-home h1,
+.tool-home h2,
+.tool-home h3,
+.tool-home p {
+  margin: 0 !important;
+}
+.tool-home h1 {
+  font-size: clamp(36px, 5vw, 64px) !important;
+  line-height: .98 !important;
+  letter-spacing: -.055em !important;
+  font-weight: 950 !important;
+  color: #ffffff !important;
+}
+.tool-home h1 .home-title-accent {
+  color: #ff7a00 !important;
+}
+.tool-home .home-hero p {
+  max-width: 720px !important;
+  margin: 18px auto 0 !important;
+  color: rgba(255,255,255,.86) !important;
+  font-size: 17px !important;
+  line-height: 1.55 !important;
+}
+.tool-home .home-actions {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  flex-wrap: wrap !important;
+  margin-top: 28px !important;
+}
+.tool-home .home-action {
+  min-width: 210px !important;
+  height: 42px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255,255,255,.62) !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+.tool-home .home-action.primary {
+  border-color: #ff7a00 !important;
+  background: linear-gradient(135deg, #ff7a00 0%, #ff9700 100%) !important;
+  color: #ffffff !important;
+}
+.tool-home .home-action:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.02) !important;
+}
+.tool-home .home-quick {
+  width: min(1280px, calc(100% - 40px)) !important;
+  margin: 28px auto 0 !important;
+}
+.tool-home .home-section-head {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin-bottom: 18px !important;
+}
+.tool-home .home-section-icon {
+  width: 48px !important;
+  height: 48px !important;
+  flex: 0 0 auto !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 12px !important;
+  background: #003366 !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 -4px 0 #ff7a00, 0 10px 24px rgba(0,31,68,.14) !important;
+}
+.tool-home .home-section-icon svg,
+.tool-home .home-icon svg {
+  width: 24px !important;
+  height: 24px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  fill: none !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+.tool-home .home-section-head h2 {
+  color: #102033 !important;
+  font-size: 24px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -.03em !important;
+  font-weight: 900 !important;
+}
+.tool-home .home-section-head p {
+  margin-top: 6px !important;
+  color: #667085 !important;
+  font-size: 14px !important;
+}
+.tool-home .home-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+.tool-home .home-card {
+  position: relative !important;
+  min-height: 210px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  padding: 24px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%) !important;
+  border: 1px solid rgba(0,31,68,.08) !important;
+  box-shadow: 0 12px 30px rgba(0,31,68,.08) !important;
+  cursor: pointer !important;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+  outline: none !important;
+  overflow: hidden !important;
+}
+.tool-home .home-card::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 3px !important;
+  background: #ff7a00 !important;
+}
+.tool-home .home-card:hover,
+.tool-home .home-card:focus-visible {
+  transform: translateY(-4px) !important;
+  border-color: rgba(255,122,0,.34) !important;
+  box-shadow: 0 18px 38px rgba(0,31,68,.13) !important;
+}
+.tool-home .home-card-top {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+.tool-home .home-icon {
+  width: 46px !important;
+  height: 46px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 13px !important;
+  background: #eef6ff !important;
+  color: #003366 !important;
+  border: 1px solid #ddeafe !important;
+}
+.tool-home .home-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 26px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  background: #eef2f7 !important;
+  color: #667085 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+.tool-home .home-card h3 {
+  color: #102033 !important;
+  font-size: 20px !important;
+  line-height: 1.15 !important;
+  letter-spacing: -.03em !important;
+  font-weight: 900 !important;
+}
+.tool-home .home-card p {
+  margin-top: 10px !important;
+  color: #667085 !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+.tool-home .home-open {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  align-self: flex-start !important;
+  color: #003366 !important;
+  background: transparent !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+}
+.tool-home .home-open::after {
+  content: "›" !important;
+  color: #ff7a00 !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  margin-top: -1px !important;
+}
+@media (max-width: 1080px) {
+  .tool-home .home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 700px) {
+  .tool-home { padding-bottom: 28px !important; }
+  .tool-home .home-hero { min-height: 0 !important; padding: 34px 16px 38px !important; }
+  .tool-home h1 { font-size: clamp(34px, 12vw, 48px) !important; }
+  .tool-home .home-hero p { font-size: 14px !important; }
+  .tool-home .home-action { width: 100% !important; min-width: 0 !important; }
+  .tool-home .home-quick { width: min(100% - 24px, 1280px) !important; margin-top: 22px !important; }
+  .tool-home .home-section-head { align-items: flex-start !important; }
+  .tool-home .home-grid { grid-template-columns: 1fr !important; }
+  .tool-home .home-card { min-height: 190px !important; }
 }
 
 /* PÓS COM ESTÁGIO: área própria no menu principal */
@@ -3668,6 +3978,496 @@ body {
   }
 }
 
+
+
+/* === AJUSTE VISUAL CONSOLIDADO: MENU TRANSPARENTE, LOGO COLORIDA E ÁREAS INTEGRADAS === */
+html,
+body {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+body {
+  overflow-x: hidden !important;
+  background: linear-gradient(180deg, #edf3fb 0%, #f4f7fb 46%, #e6eef8 100%) !important;
+}
+.fc-root,
+.fc-main {
+  background: transparent !important;
+}
+.fc-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  background: rgba(237, 243, 251, .72) !important;
+  border-bottom: 1px solid rgba(0, 51, 102, .07) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+.fc-header-inner {
+  width: min(1540px, 100%) !important;
+  min-height: 58px !important;
+  padding: 7px 24px !important;
+  display: grid !important;
+  grid-template-columns: 240px minmax(0, 1fr) 240px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+.fc-header-inner::after {
+  content: "" !important;
+  display: block !important;
+  width: 240px !important;
+  height: 1px !important;
+  grid-column: 3 !important;
+}
+.fc-brand {
+  min-width: 0 !important;
+  width: 240px !important;
+  justify-content: flex-start !important;
+  grid-column: 1 !important;
+  justify-self: start !important;
+}
+.fc-brand-logo {
+  width: 162px !important;
+  max-width: 162px !important;
+  height: auto !important;
+  display: block !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+.fc-menu {
+  grid-column: 2 !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 28px !important;
+  min-width: 0 !important;
+}
+.fc-menu-button {
+  position: relative !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  min-height: auto !important;
+  padding: 8px 1px 13px !important;
+  background: transparent !important;
+  color: #003366 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  font-family: var(--fc-font) !important;
+  font-size: 13px !important;
+  line-height: 1.1 !important;
+  font-weight: 750 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+}
+.fc-menu-button::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 5px !important;
+  height: 2px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+}
+.fc-menu-button:hover,
+.fc-menu-button.active {
+  color: #ff6d01 !important;
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.fc-menu-button.active::after {
+  background: #ff6d01 !important;
+}
+.fc-current { display: none !important; }
+.fc-main {
+  overflow: hidden !important;
+  min-height: calc(100vh - 58px) !important;
+}
+.tool-section {
+  background: transparent !important;
+  padding: 16px 18px 28px !important;
+}
+#areaInicio.tool-section {
+  padding: 0 0 38px !important;
+}
+.tool-home {
+  min-height: calc(100vh - 58px) !important;
+  padding: 0 0 38px !important;
+}
+.tool-home .home-hero {
+  margin: 0 !important;
+  min-height: 330px !important;
+  border-radius: 0 !important;
+}
+.tool-home .home-quick {
+  width: min(1280px, calc(100% - 40px)) !important;
+  margin-top: 28px !important;
+}
+
+/* Simulador Técnico com altura equilibrada e melhor visão dos cursos */
+#areaSimulador.tool-section {
+  height: calc(100vh - 58px) !important;
+  min-height: 660px !important;
+  padding: 10px 12px 14px !important;
+  overflow: hidden !important;
+}
+.tool-sim {
+  overflow: hidden !important;
+}
+.tool-sim .app {
+  width: min(1760px, calc(100vw - 24px)) !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  gap: 10px !important;
+}
+.tool-sim .topo {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  padding: 0 2px 8px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  color: #003366 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.tool-sim .topo h1 {
+  font-size: clamp(20px, 2.05vw, 28px) !important;
+  line-height: 1.05 !important;
+  color: #003366 !important;
+  margin: 0 0 4px !important;
+}
+.tool-sim .topo p {
+  max-width: 1050px !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  color: #667085 !important;
+}
+.tool-sim .topo-acoes {
+  flex-shrink: 0 !important;
+}
+.tool-sim .grid {
+  height: auto !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(350px, .84fr) minmax(760px, 1.56fr) !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+}
+.tool-sim .card {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  padding: 12px !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,.82) !important;
+  border: 1px solid rgba(0,51,102,.08) !important;
+  box-shadow: 0 8px 22px rgba(0,31,68,.06) !important;
+}
+.tool-sim .entrada-card,
+.tool-sim .resultado-card {
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.tool-sim .input-grid {
+  min-height: 0 !important;
+  grid-template-rows: 145px auto auto minmax(180px, 1fr) !important;
+  gap: 8px !important;
+}
+.tool-sim .paste-box {
+  min-height: 0 !important;
+  padding: 10px !important;
+}
+.tool-sim .paste-box img {
+  max-height: 128px !important;
+}
+.tool-sim .paste-icon {
+  width: 44px !important;
+  height: 44px !important;
+  margin-bottom: 8px !important;
+  font-size: 22px !important;
+}
+.tool-sim .paste-box strong {
+  font-size: 14px !important;
+}
+.tool-sim .paste-box span {
+  font-size: 12px !important;
+  line-height: 1.3 !important;
+}
+.tool-sim textarea {
+  min-height: 180px !important;
+}
+.tool-sim .status {
+  padding: 8px 10px !important;
+  font-size: 12px !important;
+}
+.tool-sim .acoes {
+  gap: 8px !important;
+}
+.tool-sim .lista {
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: none !important;
+  overflow: auto !important;
+}
+.tool-sim .curso {
+  padding: 9px 10px !important;
+  border-radius: 10px !important;
+}
+.tool-sim .resultado-top,
+.tool-sim .resumo {
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+.tool-sim .card-head {
+  margin-bottom: 8px !important;
+}
+.tool-sim .card-head h2 {
+  font-size: 17px !important;
+}
+
+/* LINKS E OBJEÇÕES: modelo claro com card interno restaurado */
+.tool-links {
+  background: var(--fc-blue-soft) !important;
+}
+.tool-links .app-shell,
+.tool-links .content,
+.tool-links .main,
+.tool-links .page,
+.tool-links #pageLinks,
+.tool-links #pageObjecoes {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.tool-links #pageLinks,
+.tool-links #pageObjecoes {
+  padding-top: 0 !important;
+}
+.tool-links .page-header {
+  max-width: 860px !important;
+  margin: 0 auto 18px !important;
+  text-align: center !important;
+}
+.tool-links .page-header h1 {
+  color: var(--fc-blue) !important;
+  font-size: clamp(28px, 3vw, 38px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  margin: 0 0 6px !important;
+}
+.tool-links .page-header p {
+  color: #516176 !important;
+  font-size: 14px !important;
+  margin: 0 auto !important;
+}
+.tool-links #pageLinks .panel,
+.tool-links #pageObjecoes .objection-panel {
+  width: min(980px, 100%) !important;
+  max-width: 980px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.tool-links #pageObjecoes .objection-panel {
+  width: min(980px, 100%) !important;
+  max-width: 980px !important;
+}
+.tool-links label {
+  display: block !important;
+  color: #001f44 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: .02em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 8px !important;
+}
+.tool-links select {
+  width: 100% !important;
+  min-height: 44px !important;
+  padding: 0 44px 0 16px !important;
+  border-radius: 13px !important;
+  border: 2px solid rgba(0, 31, 68, .12) !important;
+  background-color: #ffffff !important;
+  color: #001f44 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  margin: 0 0 18px !important;
+  box-shadow: 0 8px 18px rgba(0,31,68,.035) !important;
+}
+.tool-links .output-box {
+  width: 100% !important;
+  min-height: 155px !important;
+  max-height: none !important;
+  padding: 16px !important;
+  margin: 0 0 14px !important;
+  background: #f8fbff !important;
+  color: #001f44 !important;
+  border: 1px solid #d6e4f4 !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+.tool-links .objection-display {
+  width: 100% !important;
+  padding: 14px !important;
+  margin: 0 !important;
+  background: #f8fbff !important;
+  color: #001f44 !important;
+  border: 1px solid #d6e4f4 !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+.tool-links .objection-display h2 {
+  color: var(--fc-blue) !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  letter-spacing: .01em !important;
+  margin: 2px 0 12px !important;
+}
+.tool-links .objection-list {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+  max-height: none !important;
+  padding-right: 0 !important;
+  margin-bottom: 12px !important;
+  overflow: visible !important;
+}
+.tool-links .objection-question-card {
+  display: grid !important;
+  grid-template-columns: auto 1fr auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 12px !important;
+  background: #f8fbff !important;
+  color: #001f44 !important;
+  border: 1px solid #d6e4f4 !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+.tool-links .objection-question-number {
+  width: 29px !important;
+  height: 29px !important;
+  border-radius: 50% !important;
+  background: #ff9700 !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+.tool-links .objection-question-text {
+  color: #001f44 !important;
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+}
+.tool-links .action-btn,
+.tool-links .orange-btn,
+.tool-links .copy-question-btn {
+  border-radius: 8px !important;
+}
+.tool-links .action-btn,
+.tool-links .orange-btn {
+  width: 100% !important;
+  min-height: 30px !important;
+  padding: 8px 14px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  background: #ff6d01 !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.tool-links .copy-question-btn {
+  width: auto !important;
+  min-height: 30px !important;
+  padding: 7px 14px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  background: #ff6d01 !important;
+  color: #ffffff !important;
+  border: 0 !important;
+}
+.tool-links .copy-status {
+  margin-top: 10px !important;
+}
+
+@media (max-width: 1180px) {
+  #areaSimulador.tool-section {
+    height: auto !important;
+    min-height: calc(100vh - 58px) !important;
+    overflow: visible !important;
+  }
+  .tool-sim .grid {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .tool-sim .app {
+    height: auto !important;
+    min-height: 100% !important;
+  }
+  .tool-sim .card {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .tool-sim .input-grid {
+    grid-template-rows: 160px auto auto 240px !important;
+  }
+}
+@media (max-width: 760px) {
+  .fc-header {
+    background: rgba(238, 243, 251, .90) !important;
+  }
+  .fc-menu {
+    gap: 12px !important;
+    justify-content: center !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+  }
+  .tool-section,
+  #areaSimulador.tool-section,
+  .tool-links,
+  .tool-pos,
+  .tool-camp {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .tool-sim .resultado-top,
+  .tool-sim .resumo,
+  .tool-sim .filtro-tecnico-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -3675,19 +4475,92 @@ body {
 <header class="fc-header">
 <div class="fc-header-inner">
 <div aria-label="Ferramentas Comercial" class="fc-brand">
-<img alt="UNIFAHE" class="fc-brand-logo attachment-large size-large wp-image-1534" fetchpriority="high" height="184" sizes="(max-width: 668px) 100vw, 668px" src="https://unifahe.edu.br/wp-content/uploads/2025/08/logo-unifahe.png" srcset="https://unifahe.edu.br/wp-content/uploads/2025/08/logo-unifahe.png 668w, https://unifahe.edu.br/wp-content/uploads/2025/08/logo-unifahe-300x83.png 300w" width="668"/>
+<img alt="UNIFAHE" class="fc-brand-logo" src="data:image/png;base64,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"/>
 </div>
 <nav aria-label="Menu principal" class="fc-menu">
-<button class="fc-menu-button active" data-area="areaLinks" type="button">Links</button>
+<button class="fc-menu-button active" data-area="areaInicio" type="button">Início</button>
+<button class="fc-menu-button" data-area="areaLinks" type="button">Links</button>
 <button class="fc-menu-button" data-area="areaSimulador" type="button">Simulador Técnico</button>
 <button class="fc-menu-button" data-area="areaPosEstagio" type="button">Pós com Estágio</button>
 <button class="fc-menu-button" data-area="areaCampanhas" type="button">Campanhas</button>
 </nav>
-<div class="fc-current">Área atual:<strong id="fcAreaAtual">Links</strong></div>
+<div class="fc-current">Área atual:<strong id="fcAreaAtual">Início</strong></div>
 </div>
 </header>
 <main class="fc-main">
-<section aria-label="Links, objeções e benefícios" class="tool-section tool-links active" id="areaLinks">
+<section aria-label="Página inicial" class="tool-section tool-home active" id="areaInicio">
+<div class="home-wrap">
+<header class="home-hero">
+<div class="home-hero-content">
+<span class="home-eyebrow">Bom dia, equipe</span>
+<h1>Ferramentas <span class="home-title-accent">Comercial</span></h1>
+<p>Acompanhe links, campanhas, pós com estágio e recursos de atendimento em uma visão inicial clara para a rotina comercial.</p>
+<div class="home-actions">
+<button class="home-action primary" data-open-area="areaLinks" type="button">Abrir links</button>
+<button class="home-action" data-open-area="areaCampanhas" type="button">Ver campanhas</button>
+</div>
+</div>
+</header>
+<section class="home-quick" aria-label="Acesso rápido">
+<div class="home-section-head">
+<div class="home-section-icon">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h16M4 15h16"/></svg>
+</div>
+<div>
+<h2>Acesso rápido</h2>
+<p>Entre nas áreas principais do sistema com um clique.</p>
+</div>
+</div>
+<div class="home-grid" aria-label="Áreas da plataforma">
+<article class="home-card" data-open-area="areaLinks" role="button" tabindex="0">
+<div class="home-card-top">
+<div class="home-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l2.12-2.12a5 5 0 0 0-7.07-7.07L10.9 5.03"/><path d="M14 11a5 5 0 0 0-7.07 0L4.81 13.12a5 5 0 0 0 7.07 7.07l1.22-1.22"/></svg></div>
+<span class="home-tag">Links</span>
+</div>
+<div>
+<h3>Links</h3>
+<p>Acesse rapidamente os links, mensagens, objeções e benefícios principais do atendimento.</p>
+</div>
+<span class="home-open">Abrir área</span>
+</article>
+<article class="home-card" data-open-area="areaSimulador" role="button" tabindex="0">
+<div class="home-card-top">
+<div class="home-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c2.5 2 9.5 2 12 0v-5"/><path d="M19 11v6"/><path d="M19 17l1 2"/></svg></div>
+<span class="home-tag">Consulta</span>
+</div>
+<div>
+<h3>Simulador Técnico</h3>
+<p>Consulte cursos, períodos e opções para orientar melhor cada lead durante o atendimento.</p>
+</div>
+<span class="home-open">Abrir simulador</span>
+</article>
+<article class="home-card" data-open-area="areaPosEstagio" role="button" tabindex="0">
+<div class="home-card-top">
+<div class="home-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10v5c2.6 2 9.4 2 12 0v-5"/><path d="M21 9v6"/></svg></div>
+<span class="home-tag">Estágio</span>
+</div>
+<div>
+<h3>Pós com Estágio</h3>
+<p>Verifique as pós-graduações disponíveis com estágio supervisionado de forma rápida.</p>
+</div>
+<span class="home-open">Consultar</span>
+</article>
+<article class="home-card" data-open-area="areaCampanhas" role="button" tabindex="0">
+<div class="home-card-top">
+<div class="home-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/></svg></div>
+<span class="home-tag">Tempo real</span>
+</div>
+<div>
+<h3>Campanhas</h3>
+<p>Acompanhe campanhas em tempo real, visualize o ranking e salve os dados em PDF.</p>
+</div>
+<span class="home-open">Ver painel</span>
+</article>
+</div>
+</section>
+</div>
+</section>
+<section aria-label="Links, objeções e benefícios" class="tool-section tool-links" id="areaLinks">
 <div class="app-shell">
 <!-- MENU LATERAL -->
 <div aria-label="Menu da área Links" class="links-tabs">
@@ -3697,7 +4570,7 @@ body {
 </div>
 <main class="main">
 <!-- PÁGINA 1: LINKS -->
-<section class="page active dark-bg-page" id="pageLinks">
+<section class="page active" id="pageLinks">
 <header class="page-header">
 <h1>Links UNIFAHE</h1>
 <p>Selecione a oferta e copie a mensagem pronta para o atendimento.</p>
@@ -3727,7 +4600,7 @@ body {
 </div>
 </section>
 <!-- PÁGINA 2: OBJEÇÕES -->
-<section class="page dark-bg-page" id="pageObjecoes">
+<section class="page" id="pageObjecoes">
 <header class="page-header">
 <h1>Quebra de Objeção</h1>
 <p>Escolha a objeção e copie o texto único que você enviou para cada situação.</p>
@@ -3811,7 +4684,7 @@ body {
 </div>
 </header>
 <main class="grid">
-<section class="card">
+<section class="card entrada-card">
 <div class="card-head">
 <h2>Print ou texto</h2>
 <span class="tag">Ctrl + V ou texto</span>
@@ -3841,7 +4714,7 @@ Matricule-se
 O sistema vai limpar e verificar apenas o nome do curso, usando o período da base do PDF de referência."></textarea>
 </div>
 </section>
-<section class="card">
+<section class="card resultado-card">
 <div class="card-head">
 <h2>Resultado da verificação</h2>
 <span class="tag">Nome + período do PDF</span>
@@ -3869,11 +4742,12 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
 <button class="btn-secundario" onclick="mostrarTodos()">Ver todos do PDF</button>
 <div class="filtro-tecnico">
 <div class="filtro-tecnico-topo">
-<strong>Filtrar por curso técnico</strong>
-<span>Ex: Enfermagem</span>
+<strong>Filtrar por curso técnico do aluno</strong>
+<span>Busca inteligente por área</span>
 </div>
 <div class="filtro-tecnico-grid">
-<input class="campo-filtro-tecnico" id="cursoTecnicoFiltro" onkeydown="if(event.key === 'Enter') filtrarPorCursoTecnico()" placeholder="Digite o curso técnico" type="text"/>
+<input class="campo-filtro-tecnico" id="cursoTecnicoFiltro" list="sugestoesCursosTecnicos" oninput="filtrarPorCursoTecnico(false)" placeholder="Ex: Técnico em Enfermagem, Administração, Informática..." type="text"/>
+<datalist id="sugestoesCursosTecnicos"></datalist>
 <button class="btn-principal" onclick="filtrarPorCursoTecnico()" type="button">Filtrar área</button>
 </div>
 </div>
@@ -4031,6 +4905,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
 <script>
     (function() {
       const areaNames = {
+        areaInicio: 'Início',
         areaLinks: 'Links',
         areaSimulador: 'Simulador Técnico',
         areaPosEstagio: 'Pós com Estágio',
@@ -4045,6 +4920,15 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         if (areaLabel) areaLabel.textContent = areaNames[areaId] || 'Ferramenta';
       }
       buttons.forEach(button => button.addEventListener('click', () => openArea(button.dataset.area)));
+      document.querySelectorAll('[data-open-area]').forEach(card => {
+        card.addEventListener('click', () => openArea(card.dataset.openArea));
+        card.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openArea(card.dataset.openArea);
+          }
+        });
+      });
     })();
   </script>
 <script>
@@ -4647,35 +5531,35 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
     const areasCursos = {
       saude: {
         label: 'Saúde',
-        tecnicos: ['enfermagem', 'tecnico em enfermagem', 'farmacia', 'tecnico em farmacia', 'analises clinicas', 'tecnico em analises clinicas', 'radiologia', 'saude bucal', 'agente comunitario de saude', 'vigilancia em saude', 'cuidador de idosos', 'massoterapia', 'estetica']
+        tecnicos: ['enfermagem', 'tecnico em enfermagem', 'farmacia', 'tecnico em farmacia', 'analises clinicas', 'tecnico em analises clinicas', 'radiologia', 'tecnico em radiologia', 'saude bucal', 'tecnico em saude bucal', 'agente comunitario de saude', 'vigilancia em saude', 'cuidador de idosos', 'massoterapia', 'estetica', 'nutricao', 'tecnico em nutricao', 'podologia', 'optica', 'proteses dentarias', 'hemoterapia', 'imobilizacoes ortopedicas', 'necropsia']
       },
       tecnologia: {
         label: 'Tecnologia',
-        tecnicos: ['informatica', 'tecnico em informatica', 'desenvolvimento de sistemas', 'manutencao e suporte em informatica', 'redes de computadores', 'programacao', 'ti', 'tecnologia da informacao', 'internet das coisas']
+        tecnicos: ['informatica', 'tecnico em informatica', 'desenvolvimento de sistemas', 'tecnico em desenvolvimento de sistemas', 'manutencao e suporte em informatica', 'redes de computadores', 'tecnico em redes de computadores', 'programacao', 'ti', 'tecnologia da informacao', 'internet das coisas', 'computacao grafica', 'telecomunicacoes', 'eletronica', 'automacao industrial', 'mecatronica']
       },
       gestao: {
         label: 'Gestão e Negócios',
-        tecnicos: ['administracao', 'tecnico em administracao', 'logistica', 'tecnico em logistica', 'recursos humanos', 'rh', 'contabilidade', 'financas', 'comercio', 'vendas', 'marketing', 'secretariado', 'agronegocio', 'transacoes imobiliarias']
+        tecnicos: ['administracao', 'tecnico em administracao', 'logistica', 'tecnico em logistica', 'recursos humanos', 'tecnico em recursos humanos', 'rh', 'contabilidade', 'tecnico em contabilidade', 'financas', 'comercio', 'vendas', 'marketing', 'secretariado', 'tecnico em secretariado', 'agronegocio', 'tecnico em agronegocio', 'transacoes imobiliarias', 'servicos publicos', 'cooperativismo', 'comercio exterior', 'qualidade administrativa']
       },
       juridicaSeguranca: {
         label: 'Jurídica e Segurança',
-        tecnicos: ['seguranca do trabalho', 'tecnico em seguranca do trabalho', 'seguranca publica', 'servicos juridicos', 'tecnico em servicos juridicos', 'transito', 'seguranca privada', 'investigacao forense']
+        tecnicos: ['seguranca do trabalho', 'tecnico em seguranca do trabalho', 'seguranca publica', 'servicos juridicos', 'tecnico em servicos juridicos', 'transito', 'seguranca privada', 'investigacao forense', 'servicos penais', 'criminologia', 'defesa civil']
       },
       designComunicacao: {
         label: 'Design e Comunicação',
-        tecnicos: ['design grafico', 'publicidade', 'multimidia', 'comunicacao visual', 'producao audiovisual', 'marketing digital']
+        tecnicos: ['design grafico', 'tecnico em design grafico', 'publicidade', 'multimidia', 'comunicacao visual', 'producao audiovisual', 'marketing digital', 'radio e televisao', 'fotografia', 'web design', 'design de interiores']
       },
       educacaoSocial: {
         label: 'Educação e Desenvolvimento Humano',
-        tecnicos: ['magisterio', 'educacao infantil', 'servicos sociais', 'desenvolvimento comunitario', 'esporte', 'lazer']
+        tecnicos: ['magisterio', 'formacao de docentes', 'educacao infantil', 'servicos sociais', 'desenvolvimento comunitario', 'esporte', 'lazer', 'biblioteca', 'ludoteca', 'cuidador escolar']
       },
       ambientalIndustrial: {
         label: 'Ambiental, Industrial e Sustentabilidade',
-        tecnicos: ['meio ambiente', 'quimica', 'mecanica', 'eletrotecnica', 'eletromecanica', 'qualidade', 'producao industrial', 'edificacoes']
+        tecnicos: ['meio ambiente', 'tecnico em meio ambiente', 'quimica', 'tecnico em quimica', 'mecanica', 'tecnico em mecanica', 'eletrotecnica', 'eletromecanica', 'qualidade', 'tecnico em qualidade', 'producao industrial', 'edificacoes', 'tecnico em edificacoes', 'construcao civil', 'saneamento', 'mineracao', 'agropecuaria', 'agricultura', 'alimentos', 'petroleo e gas']
       },
       idiomas: {
         label: 'Idiomas',
-        tecnicos: ['frances', 'idiomas', 'traducao', 'tradutor e interprete']
+        tecnicos: ['frances', 'idiomas', 'traducao', 'tradutor e interprete', 'interprete de libras', 'libras', 'ingles', 'espanhol']
       }
     };
 
@@ -4710,6 +5594,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         'Gestão de Lojas e Pontos de Vendas',
         'Gestão de Negócios Imobiliários',
         'Gestão de Recursos Humanos',
+        'Recrutamento, Seleção e Desenvolvimento de Pessoas',
         'Gestão de Varejo',
         'Gestão Financeira',
         'Gestão Pública',
@@ -4730,6 +5615,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         'Tecnologia em Segurança do Trabalho',
         'Tecnologia em Serviços Jurídicos e Notariais',
         'Tecnologia em Serviços Penais',
+        'Despachante Documentalista',
         'Segurança do Trabalho'
       ],
       designComunicacao: [
@@ -4788,7 +5674,22 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
     let explicacaoAtual = '';
 
     const $ = (id) => document.getElementById(id);
+
+    function popularSugestoesCursosTecnicos() {
+      const datalist = $('sugestoesCursosTecnicos');
+      if (!datalist) return;
+
+      const sugestoes = Object.values(areasCursos)
+        .flatMap(dados => dados.tecnicos || [])
+        .map(nome => capitalizarConhecido(nome.replace(/^tecnico\s+em\s+/i, 'Técnico em ')))
+        .filter(Boolean);
+
+      const unicos = [...new Set(sugestoes)].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      datalist.innerHTML = unicos.map(nome => `<option value="${escapeHTML(nome)}"></option>`).join('');
+    }
+
     $('qtdBase').textContent = cursosPDF.length;
+    popularSugestoesCursosTecnicos();
 
     $('arquivoPrint').addEventListener('change', (event) => {
       const arquivo = event.target.files[0];
@@ -4916,7 +5817,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
       if (!resultadosOriginais.length) {
         $('statusSimulador').textContent = 'Nenhum nome de curso foi identificado para verificar.';
       } else if ($('cursoTecnicoFiltro').value.trim()) {
-        // o status já é definido dentro do filtro
+        // o status já é definido dentro do filtro técnico
       } else {
         $('statusSimulador').textContent = `Pronto. ${resultadosOriginais.length} curso(s) verificado(s): ${possui} possui e ${naoPossui} não possui no PDF.`;
       }
@@ -5148,20 +6049,60 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
       filtrarPorCursoTecnico(exibirAviso);
     }
 
+    function obterFonteFiltroTecnico() {
+      if (resultadosOriginais.length) return resultadosOriginais;
+
+      return cursosPDF.map(nome => ({
+        entrada: nome,
+        nomeLimpo: nome,
+        periodoConclusao: obterPeriodoConclusaoPDF(nome),
+        possui: true
+      }));
+    }
+
+    function pontuarAreaCursoTecnico(valor, area, dados) {
+      const termos = dados.tecnicos || [];
+      let melhor = 0;
+
+      termos.forEach(termo => {
+        const normalTermo = normalizar(termo);
+        if (!normalTermo) return;
+
+        if (valor === normalTermo) {
+          melhor = Math.max(melhor, 100);
+          return;
+        }
+
+        if (valor.includes(normalTermo) || normalTermo.includes(valor)) {
+          melhor = Math.max(melhor, 85);
+        }
+
+        const palavrasEntrada = palavrasChave(valor);
+        const palavrasTermo = palavrasChave(normalTermo);
+        const comuns = palavrasEntrada.filter(palavra => palavrasTermo.includes(palavra));
+
+        if (comuns.length) {
+          melhor = Math.max(melhor, comuns.length * 22);
+        }
+      });
+
+      return melhor;
+    }
+
     function identificarAreaCursoTecnico(entrada) {
       const valor = normalizar(entrada);
       if (!valor) return '';
 
       if (tecnicoAreaLookup[valor]) return tecnicoAreaLookup[valor];
 
-      const encontradoDireto = Object.entries(areasCursos).find(([area, dados]) => {
-        return dados.tecnicos.some(termo => {
-          const normalTermo = normalizar(termo);
-          return valor.includes(normalTermo) || normalTermo.includes(valor);
-        });
-      });
+      const ranking = Object.entries(areasCursos)
+        .map(([area, dados]) => ({
+          area,
+          score: pontuarAreaCursoTecnico(valor, area, dados)
+        }))
+        .sort((a, b) => b.score - a.score);
 
-      return encontradoDireto ? encontradoDireto[0] : '';
+      return ranking[0]?.score >= 22 ? ranking[0].area : '';
     }
 
     function filtrarPorCursoTecnico(exibirAviso = true) {
@@ -5173,7 +6114,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         atualizarResumo(resultadosAtuais);
         $('statusSimulador').textContent = resultadosAtuais.length
           ? 'Filtro limpo. Mostrando todos os cursos disponíveis nesta verificação.'
-          : 'Nenhum curso disponível para filtrar no momento.';
+          : 'Digite o curso técnico do aluno para o sistema sugerir cursos relacionados da base do PDF.';
         return;
       }
 
@@ -5184,13 +6125,14 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         renderizarResultados(resultadosAtuais);
         atualizarResumo(resultadosAtuais);
         if (exibirAviso) {
-          alert('Não consegui identificar a área desse curso técnico. Tente um nome como Enfermagem, Informática, Administração ou Segurança do Trabalho.');
+          alert('Não consegui identificar a área desse técnico. Tente escrever de forma mais completa, por exemplo: Técnico em Enfermagem, Técnico em Administração ou Técnico em Informática.');
         }
         $('statusSimulador').textContent = 'Não foi possível identificar a área do curso técnico informado.';
         return;
       }
 
-      const filtrados = resultadosOriginais.filter(item => {
+      const fonte = obterFonteFiltroTecnico();
+      const filtrados = fonte.filter(item => {
         const encontrado = encontrarNaBase(item.nomeLimpo);
         const nomeBase = encontrado ? encontrado.nome : item.nomeLimpo;
         const areasDoCurso = cursoAreaLookup[nomeBase] || [];
@@ -5202,9 +6144,10 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
       atualizarResumo(resultadosAtuais);
 
       const nomeArea = areasCursos[area]?.label || 'Área relacionada';
+      const origem = resultadosOriginais.length ? 'dentro dos cursos verificados' : 'na base completa do PDF';
       $('statusSimulador').textContent = filtrados.length
-        ? `Filtro aplicado para o técnico em ${entrada}. Área identificada: ${nomeArea}. ${filtrados.length} curso(s) relacionado(s) encontrado(s).`
-        : `Área identificada: ${nomeArea}. Nenhum curso relacionado foi encontrado dentro desta verificação.`;
+        ? `Curso técnico informado: ${entrada}. Área identificada: ${nomeArea}. ${filtrados.length} curso(s) relacionado(s) encontrado(s) ${origem}.`
+        : `Área identificada: ${nomeArea}. Nenhum curso relacionado foi encontrado ${origem}.`;
     }
 
     function obterPeriodoConclusaoPDF(nomeCurso) {
