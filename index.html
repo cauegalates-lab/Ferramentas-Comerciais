@@ -6028,7 +6028,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
       const disponiveis = [...document.querySelectorAll('#resultados .curso[data-possui="sim"]')]
         .map(card => {
           const nome = card.dataset.nome || card.querySelector('.nome-curso')?.textContent.trim() || '';
-          const periodo = card.dataset.periodo || '';
+          const periodo = card.dataset.periodo || obterPeriodoConclusaoPDF(nome) || '';
           return nome ? { nome, periodo } : null;
         })
         .filter(Boolean);
@@ -6038,9 +6038,35 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         return;
       }
 
+      const cursos12Meses = disponiveis.filter(item => item.periodo === '12 meses');
+      const cursos18Meses = disponiveis.filter(item => item.periodo === '18 meses');
+      const cursosSemPeriodo = disponiveis.filter(item => item.periodo !== '12 meses' && item.periodo !== '18 meses');
+      const blocos = [];
+
+      if (cursos12Meses.length) {
+        blocos.push(
+          'Cursos com conclusão em 12 meses:\n' +
+          cursos12Meses.map(item => `• ${item.nome}`).join('\n')
+        );
+      }
+
+      if (cursos18Meses.length) {
+        blocos.push(
+          'Cursos com conclusão em 18 meses:\n' +
+          cursos18Meses.map(item => `• ${item.nome}`).join('\n')
+        );
+      }
+
+      if (cursosSemPeriodo.length) {
+        blocos.push(
+          'Cursos com período não identificado:\n' +
+          cursosSemPeriodo.map(item => `• ${item.nome}`).join('\n')
+        );
+      }
+
       copiarTexto(
         'Essas são as opções de graduação com conclusão mais rápida para você:\n\n' +
-        disponiveis.map(item => `• ${item.nome}${item.periodo ? ` — ${item.periodo}` : ''}`).join('\n')
+        blocos.join('\n\n')
       );
     }
 
@@ -6050,14 +6076,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
     }
 
     function obterFonteFiltroTecnico() {
-      if (resultadosOriginais.length) return resultadosOriginais;
-
-      return cursosPDF.map(nome => ({
-        entrada: nome,
-        nomeLimpo: nome,
-        periodoConclusao: obterPeriodoConclusaoPDF(nome),
-        possui: true
-      }));
+      return resultadosOriginais.length ? resultadosOriginais : [];
     }
 
     function pontuarAreaCursoTecnico(valor, area, dados) {
@@ -6108,13 +6127,22 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
     function filtrarPorCursoTecnico(exibirAviso = true) {
       const entrada = $('cursoTecnicoFiltro').value.trim();
 
+      if (!resultadosOriginais.length) {
+        resultadosAtuais = [];
+        renderizarResultados([]);
+        atualizarResumo([]);
+        $('statusSimulador').textContent = 'Faça primeiro a verificação dos cursos no lado esquerdo para depois filtrar por área.';
+        if (entrada && exibirAviso) {
+          alert('Faça primeiro a verificação dos cursos no lado esquerdo para depois filtrar por área.');
+        }
+        return;
+      }
+
       if (!entrada) {
         resultadosAtuais = [...resultadosOriginais];
         renderizarResultados(resultadosAtuais);
         atualizarResumo(resultadosAtuais);
-        $('statusSimulador').textContent = resultadosAtuais.length
-          ? 'Filtro limpo. Mostrando todos os cursos disponíveis nesta verificação.'
-          : 'Digite o curso técnico do aluno para o sistema sugerir cursos relacionados da base do PDF.';
+        $('statusSimulador').textContent = 'Filtro limpo. Mostrando todos os cursos disponíveis nesta verificação.';
         return;
       }
 
@@ -6127,7 +6155,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         if (exibirAviso) {
           alert('Não consegui identificar a área desse técnico. Tente escrever de forma mais completa, por exemplo: Técnico em Enfermagem, Técnico em Administração ou Técnico em Informática.');
         }
-        $('statusSimulador').textContent = 'Não foi possível identificar a área do curso técnico informado.';
+        $('statusSimulador').textContent = 'Não foi possível identificar a área do curso técnico informado. Mantive a lista verificada do lado esquerdo.';
         return;
       }
 
@@ -6144,10 +6172,9 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
       atualizarResumo(resultadosAtuais);
 
       const nomeArea = areasCursos[area]?.label || 'Área relacionada';
-      const origem = resultadosOriginais.length ? 'dentro dos cursos verificados' : 'na base completa do PDF';
       $('statusSimulador').textContent = filtrados.length
-        ? `Curso técnico informado: ${entrada}. Área identificada: ${nomeArea}. ${filtrados.length} curso(s) relacionado(s) encontrado(s) ${origem}.`
-        : `Área identificada: ${nomeArea}. Nenhum curso relacionado foi encontrado ${origem}.`;
+        ? `Curso técnico informado: ${entrada}. Área identificada: ${nomeArea}. ${filtrados.length} curso(s) relacionado(s) encontrado(s) dentro dos cursos verificados.`
+        : `Área identificada: ${nomeArea}. Nenhum curso relacionado foi encontrado dentro dos cursos verificados.`;
     }
 
     function obterPeriodoConclusaoPDF(nomeCurso) {
