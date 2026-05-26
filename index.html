@@ -4596,7 +4596,7 @@ body {
 <!-- ⬆️⬆️⬆️ ALTERE OS LINKS AQUI ⬆️⬆️⬆️ -->
 </select>
 <div class="output-box" id="mensagemOutput">Selecione uma oferta acima</div>
-<button class="action-btn" onclick="copiarTexto()">Copiar mensagem</button>
+<button class="action-btn" onclick="copiarMensagemLink()">Copiar mensagem</button>
 <div class="copy-status" id="status">Copiado com sucesso!</div>
 </div>
 </section>
@@ -5044,7 +5044,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         output.innerHTML = textoHTML;
     }
 
-    function copiarTexto() {
+    function copiarMensagemLink() {
         const select = document.getElementById('cursoSelect');
         const link = select.value;
 
@@ -6065,7 +6065,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         );
       }
 
-      copiarTexto(
+      copiarTextoSimulador(
         'Essas são as opções de graduação com conclusão mais rápida para você:\n\n' +
         blocos.join('\n\n')
       );
@@ -6216,7 +6216,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
         return;
       }
 
-      copiarTexto(explicacaoAtual);
+      copiarTextoSimulador(explicacaoAtual);
     }
 
     function limparExplicacaoCurso() {
@@ -6246,7 +6246,7 @@ O sistema vai limpar e verificar apenas o nome do curso, usando o período da ba
       renderizarResultados([]);
     }
 
-    async function copiarTexto(texto) {
+    async function copiarTextoSimulador(texto) {
       try {
         await navigator.clipboard.writeText(texto);
       } catch {
