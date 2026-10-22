@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ferramentas Comerciais UNIFAHE</title>
+<meta name="description" content="Simulador de tecnólogos e consulta de pós-graduações com estágio supervisionado da UNIFAHE."/>
+<link href="favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Saira:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<style>
+/* =========================================================
+   TOKENS — identidade UNIFAHE
+   Azul-marinho e laranja tirados do próprio logo.
+   ========================================================= */
+:root {
+  /* marca */
+  --navy-900: #132A45;   /* azul do logo: menu, títulos */
+  --navy-800: #1B3757;
+  --navy-700: #24476F;
+  --orange:   #EA5C0C;   /* laranja do logo: só marcas, foco e indicadores */
+  --orange-ink: #C44A05; /* laranja escurecido p/ botão com texto branco (4.8:1) */
+  --orange-ink-hover: #A93F04;
+  --orange-tint: #FDEEE4;
+
+  /* superfícies */
+  --bg: #F4F6F9;
+  --surface: #FFFFFF;
+  --surface-2: #F8FAFC;
+  --line: #D8DFE8;
+  --line-strong: #B9C4D2;
+
+  /* texto */
+  --ink: #132A45;
+  --ink-2: #33475E;
+  --muted: #5B6B80;
+  --on-dark: #FFFFFF;
+  --on-dark-muted: #9FB1C7;
+
+  /* semântica */
+  --ok: #1E7A4C;
+  --ok-tint: #E7F4EC;
+  --no: #B3261E;
+  --no-tint: #FBEAE9;
+
+  /* tipo */
+  --font-display: "Saira", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --fs-xs: 12.5px;
+  --fs-sm: 14px;
+  --fs-md: 15.5px;
+  --fs-lg: 19px;
+  --fs-xl: 26px;
+
+  /* espaço e forma */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  --r-panel: 16px;
+  --r-control: 10px;
+  --r-pill: 999px;
+  --shadow-panel: 0 1px 0 rgba(19, 42, 69, .04), 0 8px 24px -16px rgba(19, 42, 69, .25);
+  --shadow-pop: 0 24px 60px -20px rgba(19, 42, 69, .45);
+  --rail-w: 232px;
+  --rail-w-compact: 76px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1B2C; --surface: #14253A; --surface-2: #1A2E46;
+    --line: #2A4260; --line-strong: #3A5677;
+    --ink: #EEF3F8; --ink-2: #C9D5E3; --muted: #9FB1C7;
+    --orange-tint: #3A2416; --ok: #5CC48F; --ok-tint: #133628; --no: #F08A82; --no-tint: #3A1D1D;
+    --shadow-panel: 0 1px 0 rgba(0,0,0,.2); --navy-900: #0A1626; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1B2C; --surface: #14253A; --surface-2: #1A2E46;
+  --line: #2A4260; --line-strong: #3A5677;
+  --ink: #EEF3F8; --ink-2: #C9D5E3; --muted: #9FB1C7;
+  --orange-tint: #3A2416; --ok: #5CC48F; --ok-tint: #133628; --no: #F08A82; --no-tint: #3A1D1D;
+  --shadow-panel: 0 1px 0 rgba(0,0,0,.2); --navy-900: #0A1626; color-scheme: dark;
+}
+
+/* =========================================================
+   BASE
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--fs-md)/1.5 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea { font: inherit; color: inherit; }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); color: var(--ink); line-height: 1.15; }
+p { margin: 0; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 6px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* =========================================================
+   BOTÕES — 3 variantes, mesma altura, mesma regra em todo lugar
+   primária = a ação principal da tela (1 por bloco)
+   secundária = ações de apoio
+   link = ação dentro de uma linha
+   ========================================================= */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  min-height: 44px; padding: 0 var(--s4);
+  border-radius: var(--r-control); border: 1px solid transparent;
+  font: 600 var(--fs-sm)/1 var(--font-display); letter-spacing: .01em;
+  cursor: pointer; white-space: nowrap;
+  transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease);
+}
+.btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.btn-primary { background: var(--orange-ink); color: #fff; }
+.btn-primary:hover { background: var(--orange-ink-hover); }
+.btn-secondary { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
+.btn-secondary:hover { border-color: var(--ink); background: var(--surface-2); }
+.btn-quiet { background: transparent; color: var(--muted); }
+.btn-quiet:hover { color: var(--ink); background: var(--surface-2); }
+.btn-link {
+  min-height: 36px; padding: 0 var(--s3);
+  background: transparent; color: var(--orange-ink); font-size: var(--fs-xs);
+}
+.btn-link:hover { background: var(--orange-tint); }
+:root[data-theme="dark"] .btn-link { color: #F5A06E; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn-link { color: #F5A06E; } }
+.btn:disabled { opacity: .55; cursor: progress; }
+
+/* campos */
+.field {
+  width: 100%; min-height: 44px; padding: 0 var(--s3);
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-control);
+  color: var(--ink);
+}
+.field::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+.field:focus, textarea:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 25%, transparent); }
+.label { display: block; font: 600 var(--fs-sm)/1.3 var(--font-body); color: var(--ink-2); margin-bottom: var(--s2); }
+
+/* =========================================================
+   ESTRUTURA: menu lateral + área de trabalho
+   ========================================================= */
+.app { display: grid; grid-template-columns: var(--rail-w) 1fr; min-height: 100vh; transition: grid-template-columns .25s var(--ease); }
+body.rail-compact .app { grid-template-columns: var(--rail-w-compact) 1fr; }
+
+.rail {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column; gap: var(--s5);
+  padding: var(--s5) var(--s3);
+  background: var(--navy-900); color: var(--on-dark);
+  overflow: hidden;
+}
+.rail-brand { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); padding: 0 var(--s2); min-height: 48px; }
+.rail-logo { width: 164px; height: auto; display: block; }
+.rail-star { width: 34px; height: auto; display: none; }
+.rail-toggle {
+  width: 36px; height: 36px; flex: none; display: grid; place-items: center;
+  border-radius: var(--r-control); border: 1px solid rgba(255,255,255,.16); background: transparent; color: var(--on-dark-muted); cursor: pointer;
+}
+.rail-toggle:hover { color: #fff; border-color: rgba(255,255,255,.4); }
+.rail-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s var(--ease); }
+
+.rail-nav { display: flex; flex-direction: column; gap: var(--s1); }
+.rail-group { font: 500 var(--fs-xs)/1 var(--font-body); color: var(--on-dark-muted); padding: 0 var(--s3) var(--s2); }
+.rail-item {
+  position: relative; display: flex; align-items: center; gap: var(--s3);
+  min-height: 48px; padding: 0 var(--s3);
+  border: 0; border-radius: var(--r-control); background: transparent;
+  color: var(--on-dark-muted); text-align: left; cursor: pointer;
+  font: 600 var(--fs-sm)/1.2 var(--font-display);
+}
+.rail-item svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.rail-item:hover { color: #fff; background: rgba(255,255,255,.06); }
+.rail-item.active { color: #fff; background: rgba(255,255,255,.1); }
+/* o traço laranja do "check" do logo vira o indicador de página ativa */
+.rail-item.active::before {
+  content: ""; position: absolute; left: -12px; top: 10px; bottom: 10px; width: 4px;
+  border-radius: 0 4px 4px 0; background: var(--orange);
+}
+.rail-bottom { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: var(--s2); padding: var(--s3) var(--s2) 0; border-top: 1px solid rgba(255,255,255,.1); }
+body.rail-compact .rail-bottom { justify-content: center; }
+.rail-foot { font-size: var(--fs-xs); color: var(--on-dark-muted); line-height: 1.4; }
+.rail-foot strong { display: block; color: #fff; font-weight: 600; }
+
+body.rail-compact .rail-logo, body.rail-compact .rail-label, body.rail-compact .rail-group, body.rail-compact .rail-foot { display: none; }
+body.rail-compact .rail-star { display: block; }
+body.rail-compact .rail-brand { justify-content: center; padding: 0; }
+body.rail-compact .rail-item { justify-content: center; padding: 0; }
+body.rail-compact .rail-toggle svg { transform: rotate(180deg); }
+
+.workspace { min-width: 0; padding: var(--s5) clamp(16px, 3vw, 40px) var(--s6); }
+.tool-section { display: none; max-width: 1320px; margin: 0 auto; }
+.tool-section.active { display: block; }
+
+/* cabeçalho de página */
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s5); flex-wrap: wrap; margin-bottom: var(--s5); }
+.page-head h1 { font-size: var(--fs-xl); font-weight: 700; letter-spacing: -.01em; }
+.page-head p { margin-top: var(--s2); color: var(--muted); max-width: 62ch; }
+.page-head-aside { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+.ref-chip {
+  display: inline-flex; align-items: center; gap: var(--s2); min-height: 32px; padding: 0 var(--s3);
+  border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--line);
+  font-size: var(--fs-xs); color: var(--muted);
+}
+.ref-chip strong { color: var(--ink); font-weight: 700; }
+
+/* painéis */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-panel); box-shadow: var(--shadow-panel); }
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line); }
+.panel-head h2 { display: flex; align-items: center; gap: var(--s3); font-size: var(--fs-lg); font-weight: 600; }
+/* passos 1-2-3: o simulador é de fato uma sequência */
+.step {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; flex: none;
+  border-radius: 50%; background: var(--navy-900); color: #fff;
+  font: 700 var(--fs-sm)/1 var(--font-display);
+}
+:root[data-theme="dark"] .step { background: var(--orange-ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .step { background: var(--orange-ink); } }
+
+/* =========================================================
+   SIMULADOR
+   ========================================================= */
+.sim-grid { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: var(--s5); align-items: start; }
+
+.panel-input { display: flex; flex-direction: column; position: sticky; top: var(--s5); }
+.panel-input .panel-body { display: flex; flex-direction: column; gap: var(--s3); padding: var(--s4) var(--s5) var(--s5); }
+#textoLido {
+  width: 100%; min-height: 300px; resize: vertical; padding: var(--s3);
+  background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: var(--r-control);
+  font: 400 var(--fs-sm)/1.55 var(--font-body); color: var(--ink);
+}
+.input-actions { display: grid; grid-template-columns: 1fr auto; gap: var(--s2); }
+.status {
+  font-size: var(--fs-sm); color: var(--muted); line-height: 1.45;
+  padding-left: var(--s3); border-left: 3px solid var(--line-strong);
+}
+.status.is-ok { border-left-color: var(--ok); color: var(--ink-2); }
+.barra { display: none; height: 6px; border-radius: var(--r-pill); background: var(--line); overflow: hidden; }
+.barra span { display: block; height: 100%; width: 0; background: var(--orange); transition: width .2s; }
+/* leitura por print: desligada na interface, mantida no código (colar imagem com Ctrl+V ainda funciona) */
+.paste-box, #arquivoPrint { display: none; }
+
+.panel-result { display: flex; flex-direction: column; min-width: 0; }
+.stats { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.stat {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 var(--s3);
+  border-radius: var(--r-pill); background: var(--surface-2); border: 1px solid var(--line);
+  font-size: var(--fs-xs); color: var(--muted);
+}
+.stat strong { font: 700 var(--fs-md)/1 var(--font-display); position: relative; top: 1px; color: var(--ink); }
+.stat.ok strong { color: var(--ok); }
+.stat.no strong { color: var(--no); }
+
+.filtro { display: grid; grid-template-columns: 1fr auto; gap: var(--s2); align-items: end; padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.filtro .hint { grid-column: 1 / -1; font-size: var(--fs-xs); color: var(--muted); margin-top: calc(var(--s1) * -1); }
+
+#resultados { padding: var(--s4) var(--s5); min-height: 320px; }
+
+/* a assinatura: o resultado já tem a forma da mensagem que vai para o lead */
+.mensagem {
+  border: 1px solid var(--line); border-radius: var(--r-panel);
+  border-top-left-radius: 4px;
+  background: var(--surface-2);
+  padding: var(--s4) var(--s5) var(--s3);
+}
+.mensagem-intro { font-weight: 600; color: var(--ink); margin-bottom: var(--s3); }
+.grupo + .grupo { margin-top: var(--s4); }
+.grupo-titulo {
+  display: flex; align-items: center; gap: var(--s2);
+  font: 600 var(--fs-sm)/1.2 var(--font-display); color: var(--ink-2);
+  padding-bottom: var(--s2); border-bottom: 1px dashed var(--line-strong);
+}
+.grupo-qtd {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: var(--r-pill); background: var(--navy-900); color: #fff; font-size: 12px;
+}
+.grupo-lista { list-style: none; margin: 0; padding: 0; }
+.curso {
+  display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: var(--s3);
+  min-height: 44px; padding: 2px 0;
+  border-bottom: 1px solid var(--line);
+}
+.curso:last-child { border-bottom: 0; }
+.nome-curso { font-weight: 500; color: var(--ink); }
+.curso-icone { width: 20px; height: 20px; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.curso.disponivel .curso-icone { stroke: var(--orange); }
+.curso.indisponivel .curso-icone { stroke: var(--no); }
+.curso.indisponivel .nome-curso { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--no) 50%, transparent); }
+.curso-nota { font-size: var(--fs-xs); color: var(--no); font-weight: 600; }
+.fora-base { margin-top: var(--s4); padding: var(--s3) var(--s5); border-radius: var(--r-control); background: var(--no-tint); }
+.grupo-fora .grupo-titulo { border-bottom-color: color-mix(in srgb, var(--no) 30%, transparent); color: var(--no); }
+.grupo-fora .grupo-qtd { background: var(--no); }
+.grupo-fora .curso { border-bottom-color: color-mix(in srgb, var(--no) 18%, transparent); }
+
+.vazio { display: grid; justify-items: center; gap: var(--s2); text-align: center; padding: var(--s6) var(--s4); color: var(--muted); }
+.vazio svg { width: 56px; height: 56px; fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; margin-bottom: var(--s2); }
+.vazio .vazio-check { stroke: var(--orange); stroke-width: 3; }
+.vazio strong { font: 600 var(--fs-md)/1.3 var(--font-display); color: var(--ink); }
+
+.result-foot {
+  position: sticky; bottom: 0;
+  display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+  padding: var(--s3) var(--s5); border-top: 1px solid var(--line);
+  background: var(--surface); border-radius: 0 0 var(--r-panel) var(--r-panel);
+}
+.result-foot .step { margin-right: var(--s1); }
+.result-foot .spacer { flex: 1; }
+
+/* =========================================================
+   MODAL — explicação do curso
+   ========================================================= */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: var(--s4);
+  background: rgba(10, 22, 38, .55);
+}
+.modal-overlay.ativo { display: grid; }
+.modal-box {
+  width: min(640px, 100%); max-height: calc(100vh - 32px); overflow: auto;
+  background: var(--surface); border-radius: var(--r-panel); box-shadow: var(--shadow-pop);
+  animation: subir .22s var(--ease);
+}
+@keyframes subir { from { transform: translateY(10px); opacity: 0; } }
+.modal-topo { display: flex; justify-content: space-between; gap: var(--s3); padding: var(--s5) var(--s5) var(--s4); border-bottom: 1px solid var(--line); }
+.modal-topo h3 { font-size: var(--fs-lg); font-weight: 600; }
+.modal-topo p { color: var(--muted); font-size: var(--fs-sm); margin-top: var(--s1); }
+.modal-fechar { width: 40px; height: 40px; flex: none; border-radius: var(--r-control); border: 1px solid var(--line); background: var(--surface); cursor: pointer; display: grid; place-items: center; color: var(--muted); }
+.modal-fechar:hover { color: var(--ink); border-color: var(--line-strong); }
+.modal-fechar svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; fill: none; }
+.explicador { padding: var(--s4) var(--s5) var(--s5); display: grid; gap: var(--s3); }
+.explicador-grid { display: grid; grid-template-columns: 1fr auto; gap: var(--s2); }
+.explicacao-box {
+  white-space: pre-line; padding: var(--s4); border-radius: 4px var(--r-control) var(--r-control) var(--r-control);
+  background: var(--surface-2); border: 1px solid var(--line); line-height: 1.6; color: var(--ink);
+}
+.explicacao-box.vazia { color: var(--muted); border-style: dashed; }
+.explicador-acoes { display: flex; gap: var(--s2); justify-content: flex-end; flex-wrap: wrap; }
+
+/* =========================================================
+   PÓS COM ESTÁGIO
+   ========================================================= */
+.pos-panel { max-width: 860px; overflow: hidden; }
+.pos-filter { display: grid; grid-template-columns: 1fr auto; gap: var(--s2); padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.pos-list { list-style: none; margin: 0; padding: var(--s2) var(--s5) var(--s3); }
+.pos-course { display: grid; grid-template-columns: 22px 1fr auto; gap: var(--s3); align-items: center; min-height: 52px; border-bottom: 1px solid var(--line); }
+.pos-course:last-child { border-bottom: 0; }
+.pos-course svg { width: 20px; height: 20px; fill: none; stroke: var(--orange); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.pos-course strong { font-weight: 500; }
+.pos-course mark { background: var(--orange-tint); color: inherit; border-radius: 3px; padding: 0 1px; }
+.pos-empty { padding: var(--s6) 0; text-align: center; color: var(--muted); }
+.pos-count { font-size: var(--fs-xs); color: var(--muted); }
+.pos-foot { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); flex-wrap: wrap; padding: var(--s3) var(--s5); border-top: 1px solid var(--line); }
+
+/* =========================================================
+   AVISOS
+   ========================================================= */
+.toast {
+  position: fixed; left: 50%; bottom: var(--s5); z-index: 80;
+  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  display: flex; align-items: center; gap: var(--s2);
+  max-width: min(520px, calc(100vw - 32px)); padding: var(--s3) var(--s4);
+  border-radius: var(--r-control); background: var(--navy-900); color: #fff;
+  font-weight: 600; font-size: var(--fs-sm); box-shadow: var(--shadow-pop);
+  transition: transform .2s var(--ease), opacity .2s var(--ease);
+}
+.toast::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #5CC48F; flex: none; }
+.toast[data-tipo="aviso"]::before { background: var(--orange); }
+.toast.visivel { transform: translate(-50%, 0); opacity: 1; }
+
+.app-update-notice {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: var(--s4);
+  background: rgba(10, 22, 38, .6);
+}
+.app-update-card { width: min(440px, 100%); background: var(--surface); border-radius: var(--r-panel); padding: var(--s6); box-shadow: var(--shadow-pop); text-align: center; }
+.app-update-card img { width: 48px; margin-bottom: var(--s4); }
+.app-update-card h2 { font-size: var(--fs-lg); margin-bottom: var(--s2); }
+.app-update-card p { color: var(--muted); margin-bottom: var(--s5); }
+.app-update-card .btn { width: 100%; }
+
+/* =========================================================
+   LAYOUT PLANO — sem cards, tela inteira sem rolagem
+   Uma página só: cabeçalho, duas colunas separadas por uma linha,
+   e a rolagem acontece apenas dentro da lista de resultados.
+   ========================================================= */
+.panel { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+.panel-head { padding: 0 0 var(--s3); border-bottom: 0; }
+.panel-head h2 { font-size: var(--fs-md); }
+.panel-head { min-height: 44px; padding-bottom: var(--s2); }
+.stats { gap: var(--s4); }
+.stat { min-height: 0; padding: 0; border: 0; background: transparent; }
+.result-head { align-items: flex-start; flex-wrap: nowrap; padding-bottom: var(--s3); }
+.result-title { display: grid; gap: 6px; min-width: 0; }
+.result-title .stats { gap: var(--s1) var(--s3); }
+.result-actions .btn { flex: none; }
+.result-title .stats { padding-left: 36px; }
+.result-actions { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.step { width: 24px; height: 24px; font-size: 13px; }
+
+.page-head { margin-bottom: 0; padding-bottom: var(--s4); border-bottom: 1px solid var(--line); align-items: center; }
+.page-head p { margin-top: var(--s1); font-size: var(--fs-sm); }
+
+.sim-grid { gap: 0; grid-template-columns: minmax(300px, 360px) 1fr; padding-top: var(--s5); }
+.panel-input { position: static; padding-right: var(--s5); }
+.panel-input .panel-body { padding: 0; }
+#textoLido { background: var(--surface); }
+.panel-result { padding-left: var(--s5); border-left: 1px solid var(--line); }
+
+.filtro { display: flex; align-items: center; gap: var(--s2); padding: 0 0 var(--s3); border-bottom: 1px solid var(--line); background: transparent; }
+.filtro .label { margin: 0; white-space: nowrap; }
+.filtro .field { flex: 1; min-width: 0; }
+.filtro .hint { display: none; }
+
+#resultados { padding: var(--s4) 0; min-height: 0; }
+.mensagem { border: 0; border-radius: 0; background: transparent; padding: 0 0 0 var(--s4); border-left: 2px solid var(--orange); }
+.mensagem-intro { color: var(--ink-2); font-weight: 500; }
+.grupo-titulo { border-bottom: 0; padding-bottom: var(--s1); color: var(--muted); font-size: var(--fs-xs); }
+.grupo-qtd { min-width: 20px; height: 20px; font-size: 11px; background: var(--line); color: var(--ink); }
+.curso { min-height: 40px; }
+.fora-base { background: transparent; border-radius: 0; padding: var(--s4) 0 0 calc(var(--s4) + 2px); }
+.grupo-fora .grupo-qtd { background: var(--no-tint); color: var(--no); }
+.vazio { padding: var(--s6) 0; }
+
+.result-foot { position: static; padding: var(--s3) 0 0; border-radius: 0; background: transparent; }
+
+.pos-panel { max-width: 760px; overflow: visible; padding-top: var(--s5); }
+.pos-filter { padding: 0 0 var(--s3); background: transparent; border-bottom: 1px solid var(--line); }
+.pos-list { padding: var(--s2) 0; }
+.pos-foot { padding: var(--s3) 0 0; }
+
+@media (min-width: 1081px) and (min-height: 560px) {
+  .page-head { flex-wrap: nowrap; }
+  .page-head > div:first-child { min-width: 0; }
+  .page-head-aside { flex-wrap: nowrap; flex: none; }
+  .result-actions { flex-wrap: nowrap; flex: none; }
+  .result-title .stats { flex-wrap: wrap; }
+  html, body { height: 100%; overflow: hidden; }
+  .app { height: 100vh; min-height: 0; }
+  .workspace { height: 100vh; display: flex; flex-direction: column; padding-bottom: var(--s5); }
+  .tool-section.active { display: flex; flex-direction: column; flex: 1; min-height: 0; width: 100%; }
+  .sim-grid { flex: 1; min-height: 0; align-items: stretch; }
+  .panel-input, .panel-input .panel-body { min-height: 0; }
+  .panel-input .panel-body { flex: 1; }
+  #textoLido { flex: 1; min-height: 120px; resize: none; }
+  .panel-result { min-height: 0; }
+  #resultados { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-right: var(--s2); }
+  .pos-panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .pos-list { flex: 1; overflow-y: auto; }
+}
+
+
+/* aviso de nova versão para abas já abertas (não bloqueia o trabalho) */
+.update-bar {
+  position: fixed; z-index: 90; right: max(24px, env(safe-area-inset-right, 0px)); bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+  max-width: min(460px, calc(100vw - 32px)); padding: var(--s3) var(--s3) var(--s3) var(--s4);
+  background: var(--navy-900); color: #fff; border-radius: var(--r-control); box-shadow: var(--shadow-pop);
+  animation: subir .25s var(--ease);
+}
+.update-bar p { flex: 1; min-width: 180px; font-size: var(--fs-sm); line-height: 1.4; }
+.update-bar p strong { display: block; font-family: var(--font-display); font-weight: 600; }
+.update-bar .btn-quiet { color: var(--on-dark-muted); }
+.update-bar .btn-quiet:hover { color: #fff; background: rgba(255,255,255,.08); }
+@media (max-width: 760px) { .update-bar { left: 16px; right: 16px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); max-width: none; } }
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+@media (max-width: 1080px) {
+  .sim-grid { grid-template-columns: 1fr; }
+  .panel-input { position: static; padding-right: 0; padding-bottom: var(--s5); border-bottom: 1px solid var(--line); }
+  .panel-result { padding-left: 0; border-left: 0; padding-top: var(--s5); }
+  #textoLido { min-height: 180px; }
+}
+@media (max-width: 760px) {
+  .app, body.rail-compact .app { grid-template-columns: 1fr; }
+  .rail {
+    position: fixed; top: auto; bottom: 0; left: 0; right: 0; z-index: 40; height: auto;
+    flex-direction: row; align-items: center; gap: 0; padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+  }
+  .rail-brand, .rail-bottom, .rail-group { display: none !important; }
+  .rail-nav { flex-direction: row; flex: 1; gap: var(--s1); }
+  .rail-item, body.rail-compact .rail-item { flex: 1; flex-direction: column; justify-content: center; gap: 2px; padding: 6px 0; min-height: 56px; font-size: 12px; }
+  body.rail-compact .rail-label { display: inline; }
+  .rail-item.active::before { left: 30%; right: 30%; top: -6px; bottom: auto; width: auto; height: 3px; border-radius: 0 0 3px 3px; }
+  .workspace { padding: var(--s4) max(16px, env(safe-area-inset-right, 0px)) 96px max(16px, env(safe-area-inset-left, 0px)); }
+  .page-head h1 { font-size: 22px; }
+  .explicador, .modal-topo { padding-left: var(--s4); padding-right: var(--s4); }
+  .filtro { flex-wrap: wrap; }
+  .filtro .label { width: 100%; }
+  .panel-head { flex-wrap: wrap; }
+  .result-head { flex-wrap: wrap; }
+  .result-actions { width: 100%; flex-direction: row-reverse; }
+  .result-actions .btn { flex: 1; }
+  .toast { bottom: 88px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<script>
+  // menu lateral: começa compacto só na primeira visita em telas médias
+  (function () {
+    try {
+      if (localStorage.getItem('unifaheSidebarCompacta') === '1') document.body.classList.add('rail-compact');
+    } catch (e) {}
+  })();
+</script>
+<div class="app">
+  <aside class="rail" aria-label="Menu principal">
+    <div class="rail-brand">
+      <img class="rail-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAABRCAYAAAB2f6ttAAAP40lEQVR4nO2dvW4buxLH/7xIaeDuQQS32bRRcZQnyLqI2rPuDUR+gthPYPkJbD+BFcB9lFYppPME3lMorXRaQ4H3Au7nFuRa1IrL5X7oe36AYWlJDme/RuSQHAJbABGFRDQkonDTujAMc4C8/fDZI6Jnkjy//fDZ27RODMMcGETUpUW6m9aJYZgDItUaSphsWi+GYQ4IIuqQmc6mdWMY5kAgokmGIeJWEcMwq8fSGuJWEcMw68HSGkp43LSODMPsMUQU5BihhGDTujIMs6eQnLzownDTujIMs4cUaA1xq4hhDoT/bKDOrwXzf1mJFgzDHCZE5BdsDSX4m9adYZg9gYjuSxqi+03rzjDMHuDQGsqbV+Rv+hwYhtlxclpD31WeoSVPd8OnwDDMLpOxuFUnAHJH1DhECMMw5aHlUB86w1RebhUxDFMvrq2hBJLRGrlVxDBMfRDRhcWwGFfZk30dWmfNp8AwzC6jWkOFjQrZR9Am3CpimP1C1CWIiFoAPADJ/z/VZz+jyFQI8d4ib2IrCyAC8A+AWH2OhRCRu8YMw2wLzoYow9Do34tyLoToWeq7AHBTQm4MZZjAhophdoJXQ7QCQ2MjFkL8Ycvw9sNnbzYeTFZRNzRDJYTo1iyfYZiikJy782zxyayCrqNutmH/qjy76sEwzGp5AyBA/a0OG3Gj2b51ydhotm9n48FX1K9fD8C1EGKaHHg6O/IAXACIjh9e+ukCJJeYmNa8xUKI0zqUstXRaLbPf//6GRvKdAF8Sh2eInV+FfXqwBwF4W9Ti1K1Zu8xv28xgDshxMhSR4jikRmKcieE6OdlKqjL341m+9Z0b4qScS8BR71L1vFDCHHrUK6D1UXC+JaMbD2usOWRplNEQ7IP/xdlSIY1a09nR52ns6PJ09lRpm5kb50FRa98Rh22meXGOsg+ATTzfArqlVWHMXCd5Twy9ck5j7pwCrRHxd+HZ5KujUpY5HerytbqGBrkW8MyU/nF6q4M//P718+40WyfQPpN6iQGMALQB3AN4BLAR5uD2oSy1h+VjGslc6TkuzICcCKEOEm1gsKns6MJ5K/f6fHDSyHddoB72q7AcjfbPvWC5A9Vq2AxD8Bw28/NQossU2kAGNPq5A0AJMZoNh4M4X4TYqxpdErJM8oku5N9Ctms7ellns6OAgBXkN3SWwDXxw8vcY0qbxP3bz98/lhH16EGvNl40LJ10baAsGQ5bzYedFy6OVvKX5AuizT+GuqO3ySffv/6GQshPpKM/dPJK9lott9vw8OtGb1RXt6nsyMf0gB1IA3nqckftGf4s/HgSghxuWlFdoS/Kpa9rUmPdeNtsO4fS6FihRDnMFvGBWbjwSPV0C9eB09nR97T2dENgAmkEYoAfDwAI5RwsWVdtK1Eda2CCiKCHe6ebYqeEKL3xpQihDgnIsDeMvIBDInoZFsnCmojYfrI2+3xw8shtg62qYtWlAjFfIJZ3NkSZ+NBmFP+Wv2/ssko6gfdYSKUvy8x5IhdD1A+IhPKGP0Ly0WHctJtozFSI2BXmPdxYwDnB9QKSrOrXbSpEOLjmuqydsuSaSez8cD2TmT5WvaOOu+LdRcPNUfkPEeGB2mMWvWoVI2ns6NAjYTdY26ERgDeH7ARStjFLtp0HZWoLlVoydL//etnrFqUfUu+kLtnxcndTkg1nVyM0WPWEOA6UAZoCGCIRU//9fHDy8kej4oV5Z5flGUcumU/Mj6XkcWkcNrXzNEYAXLeSqeKQkV5Ojvyn86O7iENUKAlxQBOjh9euuvUZwfwc7oWh4ppRrPOKONzGVlMCucNFpUxOkG+c2otxsgwEqYzguyKjVatx46yi120VRNa0iJ9Iqz6HJWUxRgotNOrmojmaozCcirZUQaoC2mALgxZLrkr5gR30RTqWfUsWb45HkvwVvX87yuFt5xWo2N5xqiPFTgZ1UjYI+RomJdKnkLODbqtu949hbtoc/ImMfYdjxWRyWgUNkRApjHqAzhvNNt/CCFO6xzOzxgJ0+lDGqHa6twDIiGEgN2fwV00SWhJW+iWJXD3rF5KGSJAGqNGs/0ewIlmfHp1TpizjITpXB4/vJxyV2yJWP0/h731etBdNG2tYhajkmnetkxp2QUyJzS6oNanjdLHn86OQsim6b9lRq1Sa8KyiCAnKEZF5R8SQogpEV0jO+zurk50rIu8GDs2X9A3mP2UuuyooD4HSSVDlKCWUgSQxifE/BemX0LOFew3F5AzVy+TVpAKxHUDIMwLQXuICCFuiegvZK+juiCiH1u+Kn5VhJa0qc3FIISIiGiK7NZ6CBn+hsmhsiFSrZdHmJu3/zjK8LC8JsxEDGmAeskB1fy9hwpfQkStbVtusiWcI/s+Abu9Fq0U6tnxLVn6DmL6yP7h9Pl5dKO0j0gjQPbDPcornDMSphNBTlDsJQfUfKV0DCX9M6NQztVrS5ZDHEULc9Jt3TLXPKsKr7pX1GGI/rSkRVkJDiNhOreQRuhVnoqbpMdFdtHnoFFBu0aWLIc2imYbYncK8KfyxJYsQSGNDpQ6DFEr4/jUNJLlOBKWEEMGL7s0yAoL6sNIeBQNTiFh+wXE2fK2yBAnnVmkDmd1kHE80r84joSly58eP7xMLemmuluO8g+SHRxFC9Qs5bhEWVurJswp6xVoHXo56SGqRW78QkSjCuUTPNTYQqtwX5AeGKlkiJ7OjlqW5H9UHg9uI2E6LsHL/ob5onpE5Ne1lc4+soOjaN/LFiSiy4w40nm+mxD1TUr8gmqGyIfsQWwbtd2Xql0z35I2zVkTZiKG6oo55I0saS3H+g6ZQ+mieekDJXfqqAJ3z5bx9C9VDVHLknaP/JEwnRFSwctI7iU2JKKu4aWISurF4OBH0YIDqXNnqGqI6oq7shC8TG36OMR8y5+r2XgwIaKLpIB6keIV67XXOI6ipeM87Rqx4dgmFqTyIlgLq2wRuRAjFbyMiILZeDDB8sPvAbghookWYiFakV6HRF4XLViPGishbjTbPf2AQ0jYVcEhZOfESMX1Lu2sVk5or4IyI0h/UJwcUC2erNGcBB/AdyKKkG1w2GHtiMMo2jbQA/BvwTJxo9leWoTtEMZ1BDkQUoZPsBjuCjt8xJDX4H9llNJ4h3p3be3DcfWETqPZvk3flyqjZq0KZa8zFsO+q7F+H2sKvL7rOIyibZJI7bVXF3k7dZyWXeai1jw+59TdKyG6V9d0CrWspVWHLCHEaR1ygGpds6BEmSlk3KCuKVFd7BM4LA1xIKhBhs7UkrYP0/jzumibIq5ZXmBJi6qstVNlI0uWsKToqi0hnbhGWbVRxRAVXUrRh0PwMiHESAhxAvliTEtpJql7qcfUktbZ9dgzDqNoO0/JkLBFscrgELJmqhgiv0DewsHLhBA9IcR7yJfDuZxGq0SZTBrNdpSTZVjDQ+ZVLF8Jh1G0XadMSNii5Mng0TMDq/YRTSEd0lHZSoQQ3bcfPt/OxoML2HedTeO//fDZqyushdbsbmVk8TB3oo9Qrjm9DQ9pXriQXSa0pBlDwhZFOf8jZD8nIdy25tp61MLzooMIJvqlDNHT2VHgkK0HLXhZFVQkyC4R9VBgvdpsPGjVvEzhDnKipo0Wdnj6wI6MohXGoVtm3TSxID9gH9ENhRD9GuvbFJ2a5Hwq2zVrWdJiyBCu53XHkRZCTNUIiqtDO6i5/p5jvTvNnnbR8ia59musK08WT7hNUdYQZTmCI6SCl60CzaF9CrsTuch0ACcazfYptnTkoWbWPYq26rpCS5o1JGxRlKxpSV0OkrKGyDcc6yEVvGzVCCH6yqGd9dK06q5T+YpOsOdzlKqMoqnucFywWNlJhLnUFBK2KDaZ/q6PstZMVNYQBdrnGNIhXXtXzBUhRE9tbZQeYWutqL6o0Wx/RLnJaTtDxS5aISOmlmJEJevKI8xJv1tBnXkywxXUuYvEAO7KGqLkIYsg5wb1a1CoEolDG4BuIHpZ+Wuq7xzAe8hYM6NV1QV5s6YZaVHB40WxddEy61BGLN11jrNk/f71M2402ydYvmdZdRchS8YUwOkqlgIpmTbXgUmnUYG8ZcmSldUirbPuNH0AJ7wUi2EYhmEYhmEYhmEYhmEYhmEYhmEYZqchog4RdS3pvtqAwa9YR6ds+VVBRBe2cy8oK6x6nUyo2PNdDn3CrBT1kg5Tf2tbLKvqI0t6QJKgYh1r3VOMiG5S13TJSKjzyjx3g8xO+jyUoZ4oUY/qf7ees1i4/rnXr44tp5nDxUfOwmL1sAdZxkD9ahrT1XFf+95yWRphq89FJy3dN6VrugSuAfGT/I5LO1pYXBXwFcBjSp9T9feK7VpCrg8NUuflQQZyOwFwqf7ilLyW0r/wPVRLfRK5r+Rdf4YphPqltrVI7mmRZ/1FVL/Sz5b0hV/odOuEUi0i9bKn5ZH+wBt0mqSM3Y1BZ71On+ath4ROznUapvI/2gyY4Txbqty9Jc+FQe+WSuum0rrAqwFJn4suM1DX51mXq+tO8h7qTMh+D9O6PBOvu2OqoD1UXe0v0NKJiL6rz8nLdKOlP6sXIfmFfM2vle9q34dkN0T3qkyoXrLke2DSQauzq777iQ6aTs+pOl9lqjq+E1FmwHxDHaH63rGUWThPy7nr31/1VLo/06LhWvrRoLkRCfU82vVKdL9X55rkvwBeDRkZ7qFeb/oeEhF9V2Vf9awSoZFhEvT4OlPt8yWAP7UXJobqcqiH3QPwTa01mhJR1ciFPoCRFnTsG7TgXY1mezobD64B/Df9omvlAeBO0yky5JkCCGbjQXIOHhEFpiB8jWY7yqjTT+etSATZ9XqEXLPWQ34M7iTfJyL6iuzAcd/U2sqeMjIeIAMPqvRr7XotdO8MnAP4NBsPXuUA8NkQMZVRsaEWINnduYF8afuQoXNba1Rridl44ENG+JxirlNQQpSHReM7QsbLp/ZRu4I0FEkUyDJ1+rCHnrlW8t8p+S1VxrblTwhpqBPd3mGF90h7JmLMr78PsLOaWR2++n+ntokaQfvF1WIWfUma9ZBhePW43TGAT4kzFPkvyRTKIav8GOltnpL6r5VOU0N5APhqqXOq5FwqAxzDblh89f9SRYdw5dUBTLK76sPewhkC+NRotq9VFIMIhhYOLTq8k/TTgroBWNhQ4kq7hzfIjkDpqzr72jPhZ+RlGDdMfoeELEdoyq+RdnQ+06Kj8yaV/kjFndUT9YIkOk0MMruWOie07KxOy8iMY05zP0hap66lzNBwXbqGPLpeaScwkeaHorlvimjur0p8YGndAi2daNnvp1+vvHuYzv+Yyv9I5m4yw7hB819BW57XFoo+HJygD/2aRpJo7gRtpcuTGhK3ySMiPy03nU7Lc3Re60zqMejVopwh/iJ1ZsgOsq4vGaYyFLiWvqlMIjcpm6SlRsmWzrnIFIzU+fnJPf0/QhfbPOYOTKkAAAAASUVORK5CYII=" alt="UNIFAHE"/>
+      <img class="rail-star" src="data:image/png;base64,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" alt="UNIFAHE"/>
+    </div>
+    <nav class="rail-nav" id="fcMenuPrincipal">
+      <span class="rail-group">Ferramentas</span>
+      <button class="rail-item fc-menu-button active" data-area="areaSimulador" type="button" title="Simulador de tecnólogos" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9 12 4 2 9l10 5 10-5Z"/><path d="M6 11.5V16c2.5 2 9.5 2 12 0v-4.5"/><path d="M22 9v5.5"/></svg>
+        <span class="rail-label">Simulador</span>
+      </button>
+      <button class="rail-item fc-menu-button" data-area="areaPosEstagio" type="button" title="Pós com estágio">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span class="rail-label">Pós com estágio</span>
+      </button>
+    </nav>
+    <div class="rail-bottom">
+      <div class="rail-foot">Desenvolvido por<strong>Cauê Galates</strong></div>
+      <button class="rail-toggle" id="fcSidebarToggle" type="button" aria-expanded="true" aria-label="Recolher menu" title="Recolher menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <aside class="app-update-notice" id="appUpdateNotice" role="dialog" aria-modal="true" aria-labelledby="appUpdateTitle" hidden>
+    <div class="app-update-card">
+      <img src="data:image/png;base64,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" alt=""/>
+      <h2 id="appUpdateTitle">Visual novo disponível</h2>
+      <p>As ferramentas ganharam a identidade da UNIFAHE e ficaram mais rápidas de usar. Recarregue para usar a nova versão.</p>
+      <button class="btn btn-primary" id="appUpdateButton" type="button">Recarregar página</button>
+    </div>
+  </aside>
+
+  <main class="workspace fc-main">
+    <!-- ================= SIMULADOR ================= -->
+    <section class="tool-section active" id="areaSimulador" aria-labelledby="tituloSimulador">
+      <header class="page-head">
+        <div>
+          <h1 id="tituloSimulador">Simulador de tecnólogos</h1>
+          <p>Cole a lista de cursos que o lead recebeu, veja quais temos com conclusão rápida e copie a mensagem pronta.</p>
+        </div>
+        <div class="page-head-aside">
+          <span class="ref-chip">Base de referência: <strong id="qtdBase">0</strong> cursos de 12 e 18 meses</span>
+          <button class="btn btn-secondary" type="button" onclick="abrirModalExplicacao()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+            Explicar um curso
+          </button>
+        </div>
+      </header>
+
+      <div class="sim-grid">
+        <section class="panel panel-input" aria-labelledby="tituloEntrada">
+          <div class="panel-head"><h2 id="tituloEntrada"><span class="step">1</span>Cole a lista</h2></div>
+          <div class="panel-body">
+            <label class="sr-only" for="textoLido">Lista de cursos</label>
+            <textarea id="textoLido" placeholder="Cole aqui a lista de cursos. Exemplo:
+Tecnologia em Gestão de Varejo   4 Trimestres   1240 horas   1+12x de R$ 140,35
+Matricule-se
+
+Valores, carga horária e textos extras são ignorados."></textarea>
+            <label class="paste-box" for="arquivoPrint" id="areaPrint">
+              <span id="placeholderPrint">Cole o print aqui</span>
+              <img alt="Prévia do print" id="previewPrint" style="display:none"/>
+            </label>
+            <input accept="image/*" id="arquivoPrint" type="file"/>
+            <div class="barra" id="barra"><span></span></div>
+            <div class="input-actions">
+              <button class="btn btn-primary" type="button" onclick="verificarEntrada()">Verificar cursos</button>
+              <button class="btn btn-quiet" type="button" onclick="limparTudo()">Limpar</button>
+            </div>
+            <p class="status" id="statusSimulador" role="status">Cole a lista de cursos e clique em Verificar cursos.</p>
+          </div>
+        </section>
+
+        <section class="panel panel-result" aria-labelledby="tituloResultado">
+          <div class="panel-head result-head">
+            <div class="result-title">
+              <h2 id="tituloResultado"><span class="step">2</span>Confira e copie</h2>
+              <div class="stats" aria-label="Resumo da verificação">
+                <span class="stat">Verificados <strong id="qtdVerificados">0</strong></span>
+                <span class="stat ok">Disponíveis <strong id="qtdPossui">0</strong></span>
+                <span class="stat no">Fora da base <strong id="qtdNaoPossui">0</strong></span>
+              </div>
+            </div>
+            <div class="result-actions">
+              <button class="btn btn-quiet" type="button" onclick="mostrarTodos()">Ver base completa</button>
+              <button class="btn btn-primary" type="button" onclick="copiarDisponiveis()">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>
+                Copiar mensagem
+              </button>
+            </div>
+          </div>
+          <div class="filtro">
+            <label class="label" for="cursoTecnicoFiltro">Curso técnico do aluno</label>
+            <input class="field" id="cursoTecnicoFiltro" list="sugestoesCursosTecnicos" oninput="filtrarPorCursoTecnico(false)" placeholder="Ex.: Técnico em Enfermagem (opcional)" type="text" autocomplete="off"/>
+            <datalist id="sugestoesCursosTecnicos"></datalist>
+            <button class="btn btn-secondary" type="button" onclick="filtrarPorCursoTecnico()">Filtrar pela área</button>
+          </div>
+          <div id="resultados" aria-live="polite"></div>
+        </section>
+      </div>
+
+      <div class="modal-overlay" id="modalExplicacao" onclick="fecharModalExplicacao(event)">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="tituloModalExplicacao" onclick="event.stopPropagation()">
+          <div class="modal-topo">
+            <div>
+              <h3 id="tituloModalExplicacao">Explicar um curso</h3>
+              <p>Digite o curso que o lead escolheu e copie o texto pronto.</p>
+            </div>
+            <button class="modal-fechar" type="button" aria-label="Fechar" onclick="fecharModalExplicacao()">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            </button>
+          </div>
+          <div class="explicador">
+            <label class="sr-only" for="cursoExplicacao">Nome do curso</label>
+            <div class="explicador-grid">
+              <input class="field" id="cursoExplicacao" onkeydown="if(event.key === 'Enter') gerarExplicacaoCurso()" placeholder="Ex.: Análise e Desenvolvimento de Sistemas" type="text" list="listaCursosBase" autocomplete="off"/>
+              <datalist id="listaCursosBase"></datalist>
+              <button class="btn btn-secondary" type="button" onclick="gerarExplicacaoCurso()">Gerar texto</button>
+            </div>
+            <div class="explicacao-box vazia" id="explicacaoCurso" aria-live="polite">O texto aparece aqui com o nome do curso, o período de conclusão e a descrição.</div>
+            <div class="explicador-acoes">
+              <button class="btn btn-quiet" type="button" onclick="limparExplicacaoCurso()">Limpar</button>
+              <button class="btn btn-primary" id="btnCopiarExplicacao" type="button" onclick="copiarExplicacaoCurso()">Copiar explicação</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PÓS COM ESTÁGIO ================= -->
+    <section class="tool-section" id="areaPosEstagio" aria-labelledby="tituloPos">
+      <header class="page-head">
+        <div>
+          <h1 id="tituloPos">Pós com estágio supervisionado</h1>
+          <p>Pós-graduações que incluem estágio supervisionado. Busque pelo nome para confirmar na hora do atendimento.</p>
+        </div>
+      </header>
+      <section class="panel pos-panel" aria-label="Lista de pós com estágio">
+        <div class="pos-filter">
+          <label class="sr-only" for="buscaPosEstagio">Buscar pós com estágio</label>
+          <input class="field" id="buscaPosEstagio" oninput="filtrarPosEstagio()" placeholder="Buscar pelo nome da pós" type="text" autocomplete="off"/>
+          <button class="btn btn-quiet" type="button" onclick="limparBuscaPosEstagio()">Limpar</button>
+        </div>
+        <ul class="pos-list" id="listaPosEstagio" aria-live="polite"></ul>
+        <div class="pos-foot">
+          <span class="pos-count" id="contadorPosEstagio">0 cursos</span>
+          <button class="btn btn-secondary" type="button" onclick="copiarListaPosEstagio()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>
+            Copiar lista
+          </button>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toastSimulador" role="status" aria-live="polite"></div>
+
+<div class="update-bar" id="updateBar" role="status" aria-live="polite" hidden>
+  <p><strong>Saiu uma versão nova</strong>Recarregue quando terminar o atendimento. O que você colou será apagado.</p>
+  <button class="btn btn-quiet" type="button" id="updateLater">Depois</button>
+  <button class="btn btn-primary" type="button" id="updateNow">Recarregar</button>
+</div>
+
+<script>
+  // menu lateral recolhível
+  (function () {
+    const toggle = document.getElementById('fcSidebarToggle');
+    function sync() {
+      const compact = document.body.classList.contains('rail-compact');
+      toggle.setAttribute('aria-expanded', String(!compact));
+      toggle.setAttribute('aria-label', compact ? 'Expandir menu' : 'Recolher menu');
+      toggle.title = compact ? 'Expandir menu' : 'Recolher menu';
+    }
+    toggle.addEventListener('click', function () {
+      document.body.classList.toggle('rail-compact');
+      try { localStorage.setItem('unifaheSidebarCompacta', document.body.classList.contains('rail-compact') ? '1' : '0'); } catch (e) {}
+      sync();
+    });
+    sync();
+  })();
+
+  // aviso de nova versão
+  (function () {
+    const APP_UPDATE_VERSION = '2026.10.22-identidade-unifahe';
+    const UPDATE_STORAGE_KEY = 'unifaheAppUpdateVersion';
+    const SESSION_RELOAD_KEY = 'unifaheAppUpdateReloaded';
+    const notice = document.getElementById('appUpdateNotice');
+    const button = document.getElementById('appUpdateButton');
+    function read(s, k) { try { return s.getItem(k); } catch (e) { return null; } }
+    function write(s, k, v) { try { s.setItem(k, v); } catch (e) {} }
+    let seen = null, reloaded = null;
+    try { seen = read(localStorage, UPDATE_STORAGE_KEY); reloaded = read(sessionStorage, SESSION_RELOAD_KEY); } catch (e) {}
+    // só avisa quem já usava uma versão anterior
+    if (seen && seen !== APP_UPDATE_VERSION && reloaded !== APP_UPDATE_VERSION) {
+      notice.hidden = false;
+      document.querySelector('.rail').inert = true;
+      document.querySelector('.workspace').inert = true;
+      setTimeout(() => button.focus(), 0);
+    } else if (!seen) {
+      try { write(localStorage, UPDATE_STORAGE_KEY, APP_UPDATE_VERSION); } catch (e) {}
+    }
+    button.addEventListener('click', function () {
+      button.disabled = true;
+      button.textContent = 'Recarregando...';
+      write(localStorage, UPDATE_STORAGE_KEY, APP_UPDATE_VERSION);
+      write(sessionStorage, SESSION_RELOAD_KEY, APP_UPDATE_VERSION);
+      setTimeout(() => window.location.reload(), 250);
+    });
+  })();
+
+  // checagem automática de versão nova para quem está com a aba aberta.
+  // Compara a "impressão digital" (ETag / Last-Modified) do arquivo no servidor com a de quando a página abriu.
+  // Não precisa trocar número de versão: qualquer deploy novo é detectado.
+  (function () {
+    if (!/^https?:$/.test(location.protocol)) return;
+    const INTERVALO = 3 * 60 * 1000; // a cada 3 minutos
+    const bar = document.getElementById('updateBar');
+    let base = null, adiadoAte = 0, timer = null;
+
+    async function assinatura() {
+      try {
+        const r = await fetch(location.pathname + '?v=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+        if (!r.ok) return null;
+        return r.headers.get('etag') || r.headers.get('last-modified') || null;
+      } catch (e) { return null; }
+    }
+
+    async function checar() {
+      if (document.hidden || !bar.hidden) return;
+      const atual = await assinatura();
+      if (!atual) return;
+      if (base === null) { base = atual; return; }
+      if (atual !== base && Date.now() > adiadoAte) {
+        bar.hidden = false;
+        clearInterval(timer);
+      }
+    }
+
+    document.getElementById('updateNow').addEventListener('click', () => location.reload());
+    document.getElementById('updateLater').addEventListener('click', () => {
+      bar.hidden = true;
+      adiadoAte = Date.now() + 10 * 60 * 1000; // lembra de novo em 10 minutos
+      clearInterval(timer); timer = setInterval(checar, INTERVALO);
+    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) checar(); });
+    window.addEventListener('focus', checar);
+    checar();
+    timer = setInterval(checar, INTERVALO);
+  })();
+
+  // navegação entre ferramentas
+  (function () {
+    const buttons = Array.from(document.querySelectorAll('.fc-menu-button'));
+    const sections = Array.from(document.querySelectorAll('.tool-section'));
+    function openArea(areaId) {
+      sections.forEach(s => s.classList.toggle('active', s.id === areaId));
+      buttons.forEach(b => {
+        const on = b.dataset.area === areaId;
+        b.classList.toggle('active', on);
+        if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+      });
+      window.scrollTo(0, 0);
+    }
+    buttons.forEach(b => b.addEventListener('click', () => openArea(b.dataset.area)));
+  })();
+</script>
+
+<script>
+  // ================= PÓS COM ESTÁGIO =================
+  const cursosPosEstagio = [
+    'Psicopedagogia Clínica e Institucional',
+    'Psicopedagogia Clínica',
+    'Arteterapia',
+    'Neuropsicopedagogia Clínica',
+    'Neuropsicopedagogia Clínica e Institucional',
+    'Gestão Escolar',
+    'Educação Especial com Ênfase em Síndrome de Down'
+  ];
+  let listaPosAtual = cursosPosEstagio;
+
+  function normalPos(t) { return String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
+  function escapePosEstagio(texto) {
+    return String(texto).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+  function destacar(curso, termo) {
+    if (!termo) return escapePosEstagio(curso);
+    const i = normalPos(curso).indexOf(termo);
+    if (i < 0) return escapePosEstagio(curso);
+    return escapePosEstagio(curso.slice(0, i)) + '<mark>' + escapePosEstagio(curso.slice(i, i + termo.length)) + '</mark>' + escapePosEstagio(curso.slice(i + termo.length));
+  }
+
+  function renderizarPosEstagio(lista = cursosPosEstagio, termo = '') {
+    listaPosAtual = lista;
+    const container = document.getElementById('listaPosEstagio');
+    const contador = document.getElementById('contadorPosEstagio');
+    contador.textContent = termo
+      ? `${lista.length} de ${cursosPosEstagio.length} pós encontradas`
+      : `${lista.length} pós com estágio`;
+    if (!lista.length) {
+      container.innerHTML = '<li class="pos-empty">Nenhuma pós com estágio tem esse nome. Se o curso não está aqui, ele não tem estágio supervisionado.</li>';
+      return;
+    }
+    container.innerHTML = lista.map(curso => `
+      <li class="pos-course">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8.2 14.5 16 5.5"/></svg>
+        <strong>${destacar(curso, termo)}</strong>
+        <button class="btn btn-link" type="button" data-curso="${escapePosEstagio(curso)}" onclick="copiarTextoSimulador(this.dataset.curso).then(() => toast('Nome copiado.'))">Copiar</button>
+      </li>`).join('');
+  }
+
+  function filtrarPosEstagio() {
+    const termo = normalPos(document.getElementById('buscaPosEstagio').value || '');
+    renderizarPosEstagio(cursosPosEstagio.filter(c => normalPos(c).includes(termo)), termo);
+  }
+
+  function limparBuscaPosEstagio() {
+    const campo = document.getElementById('buscaPosEstagio');
+    campo.value = '';
+    renderizarPosEstagio();
+    campo.focus();
+  }
+
+  function copiarListaPosEstagio() {
+    if (!listaPosAtual.length) { avisar('Nenhuma pós na lista para copiar.'); return; }
+    const texto = 'Pós-graduações com estágio supervisionado:\n' + listaPosAtual.map(c => `• ${c}`).join('\n');
+    copiarTextoSimulador(texto).then(() => toast('Lista copiada.'));
+  }
+</script>
+
+<script>
+  // ================= SIMULADOR (dados) =================
+    const cursosPDF = [
+          "Agente Comunitário de Saúde",
+          "Análise e Desenvolvimento de Sistemas",
+          "Big Data e Inteligência Analítica",
+          "Ciência da Felicidade",
+          "Coaching e Desenvolvimento Humano",
+          "Comércio Exterior",
+          "Desenvolvimento Comunitário",
+          "Design de Animação",
+          "Design de Interiores",
+          "Design de Produto",
+          "Design Gráfico",
+          "Embelezamento e Imagem Pessoal",
+          "Empreendedorismo Educacional",
+          "Estética e Cosmética",
+          "Gerência em Saúde",
+          "Gerontologia",
+          "Gestão Ambiental",
+          "Gestão Comercial",
+          "Gestão da Produção Industrial",
+          "Gestão da Qualidade",
+          "Gestão da Tecnologia da Informação",
+          "Gestão de Cidades Inteligentes e Sustentáveis",
+          "Gestão de Clínicas e Consultórios",
+          "Gestão de Cooperativas",
+          "Gestão de Investimentos",
+          "Gestão de Lojas e Pontos de Vendas",
+          "Gestão de Negócios Imobiliários",
+          "Gestão de Recursos Humanos",
+          "Gestão de Registros e Informações em Saúde",
+          "Gestão de Resíduos Sólidos",
+          "Gestão de Segurança Privada",
+          "Gestão de Varejo",
+          "Gestão do Esporte",
+          "Gestão em Farmácia",
+          "Gestão Financeira",
+          "Gestão Hospitalar",
+          "Gestão Pública",
+          "Internet das Coisas",
+          "Jogos Digitais",
+          "Logística",
+          "Marketing",
+          "Marketing Digital",
+          "Mediação, Conciliação e Arbitragem",
+          "Mídias Sociais Digitais",
+          "Negócios Sustentáveis e ESG",
+          "Processos Gerenciais",
+          "Produção de Conteúdos Digitais",
+          "Psicomotricidade e Ludicidade na Educação Infantil",
+          "Recrutamento, Seleção e Desenvolvimento de Pessoas",
+          "Redes de Computadores",
+          "Secretariado",
+          "Segurança da Informação",
+          "Segurança no Trânsito",
+          "Segurança Pública",
+          "Serviços Jurídicos",
+          "Sistemas para Internet",
+          "Tecnologia em Segurança do Trabalho",
+          "Tecnologia em Serviços Jurídicos e Notariais",
+          "Tecnologia em Serviços Penais",
+          "Tradutor e Intérprete Português – Francês",
+          "Vigilância em Saúde",
+          "Despachante Documentalista",
+          "Gestão do Agronegócio",
+          "Investigação e Perícia Judicial",
+          "Segurança do Trabalho"
+    ];
+
+    const aliases = {
+          "Análise e Desenvolvimento de Sistemas": [
+                "analise e desenvolvimento de sistema",
+                "analise de sistemas",
+                "desenvolvimento de sistemas",
+                "ads"
+          ],
+          "Big Data e Inteligência Analítica": [
+                "big data",
+                "inteligencia analitica"
+          ],
+          "Coaching e Desenvolvimento Humano": [
+                "desenvolvimento humano",
+                "coaching"
+          ],
+          "Gestão da Tecnologia da Informação": [
+                "gestao de tecnologia da informacao",
+                "gestao ti",
+                "gestao de ti",
+                "gestao da ti"
+          ],
+          "Gestão de Cidades Inteligentes e Sustentáveis": [
+                "cidades inteligentes e sustentaveis",
+                "gestao de cidades inteligentes"
+          ],
+          "Gestão de Lojas e Pontos de Vendas": [
+                "gestao de lojas",
+                "pontos de vendas",
+                "gestao de ponto de venda"
+          ],
+          "Gestão de Negócios Imobiliários": [
+                "negocios imobiliarios",
+                "gestao imobiliaria"
+          ],
+          "Gestão de Recursos Humanos": [
+                "recursos humanos",
+                "rh",
+                "gestao de rh"
+          ],
+          "Gestão de Registros e Informações em Saúde": [
+                "registros e informacoes em saude",
+                "informacoes em saude"
+          ],
+          "Gestão de Resíduos Sólidos": [
+                "residuos solidos"
+          ],
+          "Gestão de Segurança Privada": [
+                "seguranca privada"
+          ],
+          "Internet das Coisas": [
+                "iot"
+          ],
+          "Marketing Digital": [
+                "marketing digital"
+          ],
+          "Mídias Sociais Digitais": [
+                "midias sociais digitais",
+                "midias sociais e digitais",
+                "midias digitais"
+          ],
+          "Negócios Sustentáveis e ESG": [
+                "negocios sustentaveis e esg",
+                "esg"
+          ],
+          "Psicomotricidade e Ludicidade na Educação Infantil": [
+                "psicomotricidade",
+                "ludicidade na educacao infantil"
+          ],
+          "Recrutamento, Seleção e Desenvolvimento de Pessoas": [
+                "recrutamento e selecao",
+                "selecao e desenvolvimento de pessoas"
+          ],
+          "Segurança Pública": [
+                "seguranca publica obrigatorio carteirinha funcional"
+          ],
+          "Serviços Jurídicos": [
+                "servicos juridicos"
+          ],
+          "Tecnologia em Segurança do Trabalho": [
+                "tecnologia em seguranca do trabalho"
+          ],
+          "Tecnologia em Serviços Jurídicos e Notariais": [
+                "servicos juridicos e notariais",
+                "tecnologia em servicos juridicos e notariais"
+          ],
+          "Tecnologia em Serviços Penais": [
+                "servicos penais",
+                "tecnologia em servicos penais",
+                "servicos penais obrigatorio carteirinha funcional"
+          ],
+          "Tradutor e Intérprete Português – Francês": [
+                "tradutor e interprete portugues frances",
+                "portugues frances",
+                "português-francês",
+                "tradutor interprete portugues frances"
+          ],
+          "Despachante Documentalista": [
+                "despachante documentalista"
+          ],
+          "Gestão do Agronegócio": [
+                "agronegocio",
+                "gestao do agro"
+          ],
+          "Investigação e Perícia Judicial": [
+                "investigacao e pericia judicial",
+                "pericia judicial"
+          ]
+    };
+
+    const explicacoesCursos = {
+          "Agente Comunitário de Saúde": "Prepara o aluno para atuar com orientação, prevenção e acompanhamento de ações básicas de saúde na comunidade. É voltado para quem gosta de contato com pessoas, promoção da saúde e apoio social.",
+          "Análise e Desenvolvimento de Sistemas": "Forma profissionais para desenvolver, testar e manter sistemas, aplicativos e plataformas digitais. É uma ótima opção para quem deseja entrar ou crescer na área de tecnologia e programação.",
+          "Big Data e Inteligência Analítica": "Prepara o aluno para trabalhar com organização, leitura e análise de grandes volumes de dados. É indicado para quem deseja atuar com tecnologia, indicadores, relatórios e apoio à tomada de decisão.",
+          "Ciência da Felicidade": "Estuda práticas ligadas ao bem-estar, qualidade de vida, comportamento humano e desenvolvimento pessoal. É voltado para quem deseja atuar com projetos de melhoria de clima, saúde emocional e satisfação em ambientes pessoais ou profissionais.",
+          "Coaching e Desenvolvimento Humano": "Prepara o aluno para apoiar pessoas e equipes em processos de desenvolvimento, metas, carreira e melhoria de desempenho. É voltado para quem gosta de comunicação, comportamento humano e orientação profissional.",
+          "Comércio Exterior": "Forma profissionais para atuar em processos de importação, exportação, logística internacional e negociação com mercados externos. É indicado para quem busca oportunidades em empresas que compram, vendem ou operam fora do país.",
+          "Desenvolvimento Comunitário": "Prepara o aluno para atuar em projetos sociais, ações comunitárias e iniciativas de melhoria da qualidade de vida da população. É voltado para quem gosta de impacto social, articulação local e apoio a comunidades.",
+          "Design de Animação": "Forma profissionais para criar animações, personagens, vídeos e conteúdos visuais em movimento. É uma opção para quem tem perfil criativo e deseja atuar com produção digital, audiovisual e comunicação visual.",
+          "Design de Interiores": "Prepara o aluno para planejar ambientes internos, organizar espaços, escolher materiais, cores e soluções funcionais. É indicado para quem gosta de decoração, estética, conforto e organização de ambientes.",
+          "Design de Produto": "Forma profissionais para desenvolver produtos com foco em função, aparência, usabilidade e necessidade do consumidor. É voltado para quem gosta de criação, inovação e melhoria de objetos, embalagens e soluções comerciais.",
+          "Design Gráfico": "Prepara o aluno para criar peças visuais, identidades, layouts, materiais digitais e impressos. É indicado para quem deseja atuar com comunicação visual, marcas, redes sociais, publicidade e criação de artes.",
+          "Embelezamento e Imagem Pessoal": "Prepara o aluno para atuar com técnicas de valorização da imagem, estética, beleza e apresentação pessoal. É voltado para quem gosta de atendimento, autoestima, consultoria de imagem e mercado da beleza.",
+          "Empreendedorismo Educacional": "Forma profissionais para desenvolver, organizar e melhorar projetos, serviços e negócios na área da educação. É indicado para quem deseja empreender, gerir cursos, criar soluções educacionais ou atuar com inovação no ensino.",
+          "Estética e Cosmética": "Prepara o aluno para atuar com procedimentos estéticos, cuidados com pele, imagem pessoal e bem-estar. É uma opção para quem deseja trabalhar no mercado da beleza, clínicas, espaços estéticos ou atendimento próprio.",
+          "Gerência em Saúde": "Forma profissionais para apoiar a organização de serviços, equipes, rotinas e processos em instituições de saúde. É voltado para quem deseja atuar na gestão de clínicas, unidades de atendimento, laboratórios ou serviços relacionados.",
+          "Gerontologia": "Prepara o aluno para compreender o processo de envelhecimento e atuar em ações de cuidado, inclusão e qualidade de vida para pessoas idosas. É indicado para quem deseja trabalhar com apoio, projetos e serviços voltados à terceira idade.",
+          "Gestão Ambiental": "Forma profissionais para lidar com práticas sustentáveis, controle ambiental, educação ambiental e melhoria de processos nas organizações. É voltado para quem se interessa por meio ambiente, responsabilidade social e sustentabilidade.",
+          "Gestão Comercial": "Prepara o aluno para atuar com vendas, negociação, relacionamento com clientes, metas comerciais e estratégias de crescimento. É indicado para quem deseja trabalhar ou crescer na área comercial de empresas.",
+          "Gestão da Produção Industrial": "Forma profissionais para organizar processos produtivos, controlar qualidade, melhorar fluxos e apoiar a eficiência da indústria. É voltado para quem deseja atuar em fábricas, operações, produção e melhoria contínua.",
+          "Gestão da Qualidade": "Prepara o aluno para acompanhar padrões, processos, auditorias, indicadores e melhorias dentro das organizações. É indicado para quem busca atuar com controle de qualidade, padronização e eficiência operacional.",
+          "Gestão da Tecnologia da Informação": "Forma profissionais para gerenciar recursos, sistemas, equipes e projetos de tecnologia dentro das empresas. É uma opção para quem deseja atuar na área de TI com foco em gestão, suporte, infraestrutura e processos.",
+          "Gestão de Cidades Inteligentes e Sustentáveis": "Prepara o aluno para atuar em projetos urbanos que envolvem tecnologia, sustentabilidade, mobilidade e melhoria dos serviços públicos. É voltado para quem se interessa por inovação, planejamento urbano e desenvolvimento sustentável.",
+          "Gestão de Clínicas e Consultórios": "Forma profissionais para administrar rotinas, atendimento, agenda, finanças e processos em clínicas e consultórios. É indicado para quem deseja atuar na organização de serviços de saúde e atendimento ao paciente.",
+          "Gestão de Cooperativas": "Prepara o aluno para atuar na administração de cooperativas, organização de associados, processos financeiros e desenvolvimento coletivo. É voltado para quem deseja trabalhar com gestão colaborativa, comunidades produtivas e associativismo.",
+          "Gestão de Investimentos": "Forma profissionais para compreender produtos financeiros, análise de investimentos, planejamento e tomada de decisão no mercado financeiro. É indicado para quem gosta de finanças, números e estratégias para aplicação de recursos.",
+          "Gestão de Lojas e Pontos de Vendas": "Prepara o aluno para organizar lojas, equipes, atendimento, estoque, exposição de produtos e resultados de venda. É uma boa opção para quem trabalha ou quer crescer no comércio e no varejo.",
+          "Gestão de Negócios Imobiliários": "Forma profissionais para atuar com administração, atendimento, negociação e processos ligados ao mercado imobiliário. É indicado para quem se interessa por imóveis, vendas, locação e gestão de negócios no setor.",
+          "Gestão de Recursos Humanos": "Prepara o aluno para atuar com contratação, treinamento, desenvolvimento, clima organizacional e rotinas de pessoas. É voltado para quem gosta de lidar com pessoas e deseja crescer na área de RH.",
+          "Gestão de Registros e Informações em Saúde": "Forma profissionais para organizar dados, documentos, prontuários, registros e informações em serviços de saúde. É indicado para quem deseja atuar com processos administrativos, segurança da informação e apoio à gestão em saúde.",
+          "Gestão de Resíduos Sólidos": "Prepara o aluno para atuar com coleta, tratamento, destinação e gestão de resíduos de forma ambientalmente responsável. É voltado para quem se interessa por sustentabilidade, meio ambiente e processos de reaproveitamento.",
+          "Gestão de Segurança Privada": "Forma profissionais para apoiar a organização de serviços, equipes, rotinas e estratégias de segurança privada. É indicado para quem deseja atuar em empresas, condomínios, eventos ou operações de proteção patrimonial.",
+          "Gestão de Varejo": "Prepara o aluno para atuar com vendas, operação de loja, atendimento, estoque, compras e estratégias para melhorar resultados no varejo. É indicado para quem trabalha em comércio ou deseja assumir funções de liderança.",
+          "Gestão do Esporte": "Forma profissionais para organizar eventos, projetos, equipes, espaços e negócios ligados ao esporte. É voltado para quem gosta da área esportiva e deseja atuar com gestão, planejamento e desenvolvimento de atividades.",
+          "Gestão em Farmácia": "Prepara o aluno para apoiar a administração de farmácias, drogarias, estoque, atendimento e processos comerciais do setor. É indicado para quem deseja atuar na gestão de negócios farmacêuticos e serviços relacionados.",
+          "Gestão Financeira": "Forma profissionais para controlar finanças, fluxo de caixa, orçamento, custos, investimentos e planejamento financeiro. É uma opção para quem deseja trabalhar com números, análise e organização financeira de empresas.",
+          "Gestão Hospitalar": "Prepara o aluno para apoiar a administração de hospitais, clínicas e serviços de saúde, com foco em processos, equipes e atendimento. É indicado para quem busca atuar na gestão da área hospitalar e de saúde.",
+          "Gestão Pública": "Forma profissionais para atuar na organização de serviços, projetos, processos e políticas dentro da administração pública. É voltado para quem deseja trabalhar com gestão em órgãos públicos, projetos sociais ou serviços à população.",
+          "Internet das Coisas": "Prepara o aluno para compreender soluções que conectam dispositivos, sensores, sistemas e dados. É indicado para quem se interessa por tecnologia, automação, inovação e integração de equipamentos inteligentes.",
+          "Jogos Digitais": "Forma profissionais para criar, planejar e desenvolver jogos, roteiros, mecânicas, interfaces e experiências digitais. É uma opção para quem tem perfil criativo e deseja atuar no mercado de games e entretenimento digital.",
+          "Logística": "Prepara o aluno para atuar com transporte, armazenamento, distribuição, compras, estoque e melhoria de processos. É indicado para quem deseja trabalhar em empresas que precisam organizar entregas, operações e cadeia de suprimentos.",
+          "Marketing": "Forma profissionais para criar estratégias de divulgação, posicionamento, relacionamento com clientes, pesquisa de mercado e fortalecimento de marcas. É indicado para quem gosta de comunicação, vendas e comportamento do consumidor.",
+          "Marketing Digital": "Prepara o aluno para atuar com redes sociais, anúncios, conteúdo, funil de vendas, tráfego e estratégias online. É uma ótima opção para quem quer trabalhar com divulgação digital, negócios online e geração de clientes.",
+          "Mediação, Conciliação e Arbitragem": "Forma profissionais para compreender métodos de resolução de conflitos, negociação e acordos extrajudiciais. É voltado para quem gosta de diálogo, negociação e atuação em situações que exigem equilíbrio entre partes.",
+          "Mídias Sociais Digitais": "Prepara o aluno para planejar conteúdos, gerenciar redes sociais, acompanhar métricas e fortalecer a presença digital de marcas e profissionais. É indicado para quem deseja trabalhar com social media, comunicação e marketing online.",
+          "Negócios Sustentáveis e ESG": "Forma profissionais para apoiar empresas em práticas de sustentabilidade, responsabilidade social, governança e impacto ambiental. É voltado para quem busca atuar com inovação, gestão consciente e projetos alinhados ao ESG.",
+          "Processos Gerenciais": "Prepara o aluno para administrar empresas, organizar processos, acompanhar indicadores, liderar equipes e apoiar decisões estratégicas. É uma formação versátil para quem deseja atuar em gestão de negócios.",
+          "Produção de Conteúdos Digitais": "Forma profissionais para planejar, criar e organizar conteúdos para internet, redes sociais, vídeos, blogs e campanhas digitais. É indicado para quem gosta de comunicação, criatividade e produção online.",
+          "Psicomotricidade e Ludicidade na Educação Infantil": "Prepara o aluno para compreender o desenvolvimento infantil por meio do movimento, brincadeiras e atividades lúdicas. É voltado para quem deseja atuar com apoio pedagógico, recreação, educação infantil e desenvolvimento de crianças.",
+          "Recrutamento, Seleção e Desenvolvimento de Pessoas": "Forma profissionais para conduzir processos seletivos, integração, treinamento e desenvolvimento de colaboradores. É indicado para quem deseja trabalhar com pessoas, RH e crescimento profissional de equipes.",
+          "Redes de Computadores": "Prepara o aluno para atuar com instalação, configuração, manutenção e segurança de redes e infraestrutura de computadores. É indicado para quem deseja trabalhar com suporte técnico, conectividade e tecnologia da informação.",
+          "Secretariado": "Forma profissionais para organizar agendas, documentos, atendimento, comunicação interna e apoio administrativo. É indicado para quem deseja atuar em empresas, escritórios, instituições e rotinas de gestão.",
+          "Segurança da Informação": "Prepara o aluno para proteger dados, sistemas e redes contra riscos, acessos indevidos e falhas de segurança. É uma opção para quem deseja atuar com tecnologia, proteção digital e prevenção de ataques virtuais.",
+          "Segurança no Trânsito": "Forma profissionais para atuar com educação, prevenção, planejamento e gestão de ações voltadas à segurança viária. É indicado para quem se interessa por mobilidade, orientação, fiscalização educativa e redução de riscos no trânsito.",
+          "Segurança Pública": "Prepara o aluno para compreender políticas, rotinas, gestão e ações ligadas à segurança da população. É voltado para quem deseja atuar ou se desenvolver em áreas relacionadas à proteção social e serviços de segurança.",
+          "Serviços Jurídicos": "Forma profissionais para apoiar rotinas administrativas e documentais em escritórios, departamentos jurídicos e instituições. É indicado para quem se interessa pela área jurídica, atendimento, organização de processos e suporte documental.",
+          "Sistemas para Internet": "Prepara o aluno para desenvolver sites, sistemas web, interfaces e soluções digitais conectadas à internet. É indicado para quem deseja trabalhar com programação, tecnologia e criação de plataformas online.",
+          "Tecnologia em Segurança do Trabalho": "Forma profissionais para apoiar a gestão de prevenção de acidentes, identificação de riscos, treinamentos e práticas de segurança nas organizações. É indicado para quem deseja atuar com rotinas e processos de segurança ocupacional.",
+          "Tecnologia em Serviços Jurídicos e Notariais": "Prepara o aluno para apoiar atividades administrativas, documentais e operacionais em serviços jurídicos, cartórios e áreas notariais. É indicado para quem gosta de organização, legislação aplicada e atendimento formal.",
+          "Tecnologia em Serviços Penais": "Forma profissionais para compreender rotinas, gestão, legislação aplicada e processos ligados ao sistema penal. É voltado para quem deseja se desenvolver em áreas relacionadas à segurança, administração e serviços penais.",
+          "Tradutor e Intérprete Português – Francês": "Prepara o aluno para atuar com tradução, interpretação, comunicação intercultural e adaptação de textos entre português e francês. É indicado para quem tem interesse em idiomas, comunicação e mediação linguística.",
+          "Vigilância em Saúde": "Forma profissionais para apoiar ações de prevenção, monitoramento, controle de riscos e promoção da saúde coletiva. É indicado para quem deseja atuar com saúde pública, orientação à população e acompanhamento de indicadores.",
+          "Despachante Documentalista": "Prepara o aluno para atuar com organização, acompanhamento e encaminhamento de documentos, registros e processos administrativos. É indicado para quem gosta de rotinas documentais, atendimento e resolução de pendências burocráticas.",
+          "Gestão do Agronegócio": "Forma profissionais para administrar propriedades, processos, logística, comercialização e gestão de negócios ligados ao campo. É indicado para quem deseja atuar no setor agropecuário, cooperativas, empresas rurais ou cadeia produtiva do agro.",
+          "Investigação e Perícia Judicial": "Prepara o aluno para compreender técnicas de investigação, análise de evidências, documentação e apoio a processos judiciais. É indicado para quem se interessa por investigação, perícia, análise técnica e produção de informações para decisões.",
+          "Segurança do Trabalho": "Prepara o aluno para atuar com prevenção de acidentes, identificação de riscos, orientação de equipes e apoio às práticas de segurança nas empresas. É indicado para quem deseja trabalhar com proteção do trabalhador e melhoria dos ambientes laborais."
+    };
+
+    // Períodos oficiais extraídos do PDF de referência:
+    // - página 1: cursos de 12 meses
+    // - página 2: cursos de 18 meses
+    // A lógica abaixo NÃO usa trimestre, semestre, mês ou qualquer período vindo do texto/print colado.
+    const cursos18MesesPDF = new Set([
+      'Segurança no Trânsito',
+      'Segurança Pública',
+      'Serviços Jurídicos',
+      'Sistemas para Internet',
+      'Tecnologia em Segurança do Trabalho',
+      'Tecnologia em Serviços Jurídicos e Notariais',
+      'Tecnologia em Serviços Penais',
+      'Tradutor e Intérprete Português – Francês',
+      'Vigilância em Saúde',
+      'Despachante Documentalista',
+      'Gestão do Agronegócio',
+      'Investigação e Perícia Judicial',
+      'Segurança do Trabalho'
+    ]);
+
+    const periodosConclusaoPDF = cursosPDF.reduce((acc, nome) => {
+      acc[nome] = cursos18MesesPDF.has(nome) ? '18 meses' : '12 meses';
+      return acc;
+    }, {});
+
+    const areasCursos = {
+      saude: {
+        label: 'Saúde',
+        tecnicos: ['enfermagem', 'tecnico em enfermagem', 'farmacia', 'tecnico em farmacia', 'analises clinicas', 'tecnico em analises clinicas', 'radiologia', 'tecnico em radiologia', 'saude bucal', 'tecnico em saude bucal', 'agente comunitario de saude', 'vigilancia em saude', 'cuidador de idosos', 'massoterapia', 'estetica', 'nutricao', 'tecnico em nutricao', 'podologia', 'optica', 'proteses dentarias', 'hemoterapia', 'imobilizacoes ortopedicas', 'necropsia']
+      },
+      tecnologia: {
+        label: 'Tecnologia',
+        tecnicos: ['informatica', 'tecnico em informatica', 'desenvolvimento de sistemas', 'tecnico em desenvolvimento de sistemas', 'manutencao e suporte em informatica', 'redes de computadores', 'tecnico em redes de computadores', 'programacao', 'ti', 'tecnologia da informacao', 'internet das coisas', 'computacao grafica', 'telecomunicacoes', 'eletronica', 'automacao industrial', 'mecatronica']
+      },
+      gestao: {
+        label: 'Gestão e Negócios',
+        tecnicos: ['administracao', 'tecnico em administracao', 'logistica', 'tecnico em logistica', 'recursos humanos', 'tecnico em recursos humanos', 'rh', 'contabilidade', 'tecnico em contabilidade', 'financas', 'comercio', 'vendas', 'marketing', 'secretariado', 'tecnico em secretariado', 'agronegocio', 'tecnico em agronegocio', 'transacoes imobiliarias', 'servicos publicos', 'cooperativismo', 'comercio exterior', 'qualidade administrativa']
+      },
+      juridicaSeguranca: {
+        label: 'Jurídica e Segurança',
+        tecnicos: ['seguranca do trabalho', 'tecnico em seguranca do trabalho', 'seguranca publica', 'servicos juridicos', 'tecnico em servicos juridicos', 'transito', 'seguranca privada', 'investigacao forense', 'servicos penais', 'criminologia', 'defesa civil']
+      },
+      designComunicacao: {
+        label: 'Design e Comunicação',
+        tecnicos: ['design grafico', 'tecnico em design grafico', 'publicidade', 'multimidia', 'comunicacao visual', 'producao audiovisual', 'marketing digital', 'radio e televisao', 'fotografia', 'web design', 'design de interiores']
+      },
+      educacaoSocial: {
+        label: 'Educação e Desenvolvimento Humano',
+        tecnicos: ['magisterio', 'formacao de docentes', 'educacao infantil', 'servicos sociais', 'desenvolvimento comunitario', 'esporte', 'lazer', 'biblioteca', 'ludoteca', 'cuidador escolar']
+      },
+      ambientalIndustrial: {
+        label: 'Ambiental, Industrial e Sustentabilidade',
+        tecnicos: ['meio ambiente', 'tecnico em meio ambiente', 'quimica', 'tecnico em quimica', 'mecanica', 'tecnico em mecanica', 'eletrotecnica', 'eletromecanica', 'qualidade', 'tecnico em qualidade', 'producao industrial', 'edificacoes', 'tecnico em edificacoes', 'construcao civil', 'saneamento', 'mineracao', 'agropecuaria', 'agricultura', 'alimentos', 'petroleo e gas']
+      },
+      idiomas: {
+        label: 'Idiomas',
+        tecnicos: ['frances', 'idiomas', 'traducao', 'tradutor e interprete', 'interprete de libras', 'libras', 'ingles', 'espanhol']
+      }
+    };
+
+    const cursosPorArea = {
+      saude: [
+        'Agente Comunitário de Saúde',
+        'Estética e Cosmética',
+        'Gerência em Saúde',
+        'Gerontologia',
+        'Gestão de Clínicas e Consultórios',
+        'Gestão de Registros e Informações em Saúde',
+        'Gestão em Farmácia',
+        'Gestão Hospitalar',
+        'Vigilância em Saúde',
+        'Embelezamento e Imagem Pessoal'
+      ],
+      tecnologia: [
+        'Análise e Desenvolvimento de Sistemas',
+        'Big Data e Inteligência Analítica',
+        'Gestão da Tecnologia da Informação',
+        'Internet das Coisas',
+        'Jogos Digitais',
+        'Redes de Computadores',
+        'Segurança da Informação',
+        'Sistemas para Internet'
+      ],
+      gestao: [
+        'Comércio Exterior',
+        'Gestão Comercial',
+        'Gestão de Cooperativas',
+        'Gestão de Investimentos',
+        'Gestão de Lojas e Pontos de Vendas',
+        'Gestão de Negócios Imobiliários',
+        'Gestão de Recursos Humanos',
+        'Recrutamento, Seleção e Desenvolvimento de Pessoas',
+        'Gestão de Varejo',
+        'Gestão Financeira',
+        'Gestão Pública',
+        'Logística',
+        'Marketing',
+        'Marketing Digital',
+        'Processos Gerenciais',
+        'Secretariado',
+        'Gestão do Agronegócio'
+      ],
+      juridicaSeguranca: [
+        'Gestão de Segurança Privada',
+        'Investigação e Perícia Judicial',
+        'Mediação, Conciliação e Arbitragem',
+        'Segurança no Trânsito',
+        'Segurança Pública',
+        'Serviços Jurídicos',
+        'Tecnologia em Segurança do Trabalho',
+        'Tecnologia em Serviços Jurídicos e Notariais',
+        'Tecnologia em Serviços Penais',
+        'Despachante Documentalista',
+        'Segurança do Trabalho'
+      ],
+      designComunicacao: [
+        'Design de Animação',
+        'Design de Interiores',
+        'Design de Produto',
+        'Design Gráfico',
+        'Mídias Sociais Digitais',
+        'Produção de Conteúdos Digitais'
+      ],
+      educacaoSocial: [
+        'Ciência da Felicidade',
+        'Coaching e Desenvolvimento Humano',
+        'Desenvolvimento Comunitário',
+        'Empreendedorismo Educacional',
+        'Gestão do Esporte',
+        'Psicomotricidade e Ludicidade na Educação Infantil'
+      ],
+      ambientalIndustrial: [
+        'Gestão Ambiental',
+        'Gestão da Produção Industrial',
+        'Gestão da Qualidade',
+        'Gestão de Cidades Inteligentes e Sustentáveis',
+        'Gestão de Resíduos Sólidos',
+        'Negócios Sustentáveis e ESG'
+      ],
+      idiomas: [
+        'Tradutor e Intérprete Português – Francês'
+      ]
+    };
+
+    const cursoAreaLookup = Object.entries(cursosPorArea).reduce((acc, [area, cursos]) => {
+      cursos.forEach(nome => {
+        acc[nome] = acc[nome] || [];
+        acc[nome].push(area);
+      });
+      return acc;
+    }, {});
+
+    const tecnicoAreaLookup = Object.entries(areasCursos).reduce((acc, [area, dados]) => {
+      dados.tecnicos.forEach(termo => {
+        acc[normalizar(termo)] = area;
+      });
+      return acc;
+    }, {});
+
+    const baseIndex = cursosPDF.map(nome => ({
+      nome,
+      normal: normalizar(nome),
+      termos: [normalizar(nome), ...(aliases[nome] || []).map(normalizar)]
+    }));
+
+  // ================= SIMULADOR (lógica) =================
+
+    let imagemAtual = null;
+    let resultadosOriginais = [];
+    let resultadosAtuais = [];
+    let explicacaoAtual = '';
+
+    const $ = (id) => document.getElementById(id);
+
+    function popularSugestoesCursosTecnicos() {
+      const datalist = $('sugestoesCursosTecnicos');
+      if (!datalist) return;
+
+      const sugestoes = Object.values(areasCursos)
+        .flatMap(dados => dados.tecnicos || [])
+        .map(nome => capitalizarConhecido(nome.replace(/^tecnico\s+em\s+/i, 'Técnico em ')))
+        .filter(Boolean);
+
+      const unicos = [...new Set(sugestoes)].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      datalist.innerHTML = unicos.map(nome => `<option value="${escapeHTML(nome)}"></option>`).join('');
+    }
+
+    $('qtdBase').textContent = cursosPDF.length;
+    popularSugestoesCursosTecnicos();
+
+    $('arquivoPrint').addEventListener('change', (event) => {
+      const arquivo = event.target.files[0];
+      if (arquivo) carregarImagem(arquivo);
+    });
+
+    document.addEventListener('paste', (event) => {
+      const itens = event.clipboardData?.items || [];
+      for (const item of itens) {
+        if (item.type.indexOf('image') === 0) {
+          carregarImagem(item.getAsFile());
+          return;
+        }
+      }
+    });
+
+    $('areaPrint').addEventListener('dragover', (event) => {
+      event.preventDefault();
+      $('areaPrint').classList.add('active');
+    });
+
+    $('areaPrint').addEventListener('dragleave', () => $('areaPrint').classList.remove('active'));
+
+    $('areaPrint').addEventListener('drop', (event) => {
+      event.preventDefault();
+      $('areaPrint').classList.remove('active');
+      const arquivo = event.dataTransfer.files[0];
+      if (arquivo) carregarImagem(arquivo);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && $('modalExplicacao').classList.contains('ativo')) {
+        fecharModalExplicacao();
+      }
+    });
+
+    let focoAntesModal = null;
+    function abrirModalExplicacao(nomeCurso) {
+      focoAntesModal = document.activeElement;
+      $('modalExplicacao').classList.add('ativo');
+      if (typeof nomeCurso === 'string' && nomeCurso) {
+        $('cursoExplicacao').value = nomeCurso;
+        gerarExplicacaoCurso();
+        setTimeout(() => $('btnCopiarExplicacao').focus(), 40);
+      } else {
+        setTimeout(() => $('cursoExplicacao').focus(), 40);
+      }
+    }
+
+    function explicarCursoDaLista(botao) {
+      const card = botao.closest('.curso');
+      if (card) abrirModalExplicacao(card.dataset.nome || '');
+    }
+
+    function fecharModalExplicacao(event) {
+      if (event && event.target && event.target !== $('modalExplicacao')) return;
+      $('modalExplicacao').classList.remove('ativo');
+      if (focoAntesModal && focoAntesModal.focus) focoAntesModal.focus();
+    }
+
+    function carregarImagem(arquivo) {
+      imagemAtual = arquivo;
+      $('previewPrint').src = URL.createObjectURL(arquivo);
+      $('previewPrint').style.display = 'block';
+      $('placeholderPrint').style.display = 'none';
+      $('statusSimulador').textContent = 'Print carregado. Clique em Verificar para fazer a leitura.';
+    }
+
+    async function verificarEntrada() {
+      const textoManual = $('textoLido').value.trim();
+
+      if (textoManual) {
+        verificarCursos(textoManual);
+        return;
+      }
+
+      if (!imagemAtual) {
+        avisar('Cole a lista de cursos antes de verificar.'); $('textoLido').focus();
+        return;
+      }
+
+      if (!window.Tesseract) {
+        $('statusSimulador').textContent = 'O leitor de print não carregou. Cole o texto manualmente no campo abaixo.';
+        return;
+      }
+
+      const barra = $('barra');
+      const progresso = barra.querySelector('span');
+      barra.style.display = 'block';
+      progresso.style.width = '0%';
+      $('statusSimulador').textContent = 'Lendo o print...';
+
+      try {
+        const resultado = await Tesseract.recognize(imagemAtual, 'por+eng', {
+          logger: (m) => {
+            if (m.status === 'recognizing text') {
+              const percentual = Math.round((m.progress || 0) * 100);
+              progresso.style.width = percentual + '%';
+              $('statusSimulador').textContent = `Lendo o print... ${percentual}%`;
+            }
+          }
+        });
+
+        const texto = resultado?.data?.text || '';
+        $('textoLido').value = texto.trim();
+        verificarCursos(texto);
+      } catch (erro) {
+        console.error(erro);
+        $('statusSimulador').textContent = 'Não consegui ler o print. Cole o texto manualmente no campo abaixo.';
+      }
+    }
+
+    function verificarCursos(textoOriginal) {
+      const candidatos = extrairCandidatos(textoOriginal);
+      let resultados = [];
+
+      if (candidatos.length) {
+        resultados = candidatos.map(candidato => {
+          const encontrado = encontrarNaBase(candidato.nomeLimpo);
+          const nomeFinal = encontrado ? encontrado.nome : candidato.nomeLimpo;
+          const periodoConclusao = encontrado ? obterPeriodoConclusaoPDF(encontrado.nome) : '';
+          return {
+            entrada: candidato.original,
+            nomeLimpo: nomeFinal,
+            periodoConclusao,
+            possui: Boolean(encontrado)
+          };
+        });
+      } else {
+        resultados = detectarCursosNoTextoLivre(textoOriginal);
+      }
+
+      resultadosOriginais = removerDuplicadosResultado(resultados);
+      filtrarPorCursoTecnico(false);
+
+      const possui = resultadosOriginais.filter(item => item.possui).length;
+      const naoPossui = resultadosOriginais.filter(item => item.possui === false).length;
+
+      if (!resultadosOriginais.length) {
+        $('statusSimulador').textContent = 'Nenhum nome de curso foi identificado para verificar.';
+      } else if ($('cursoTecnicoFiltro').value.trim()) {
+        // o status já é definido dentro do filtro técnico
+      } else {
+        $('statusSimulador').textContent = `${resultadosOriginais.length} curso(s) verificado(s): ${possui} disponível(is) e ${naoPossui} fora da base.`;
+      }
+    }
+
+    function extrairCandidatos(texto) {
+      const linhas = String(texto || '')
+        .split(/\r?\n/)
+        .map(linha => linha.trim())
+        .filter(Boolean);
+
+      const candidatos = [];
+
+      linhas.forEach(linha => {
+        if (ehLinhaIgnorada(linha)) return;
+
+        const nomeLimpo = limparNomeCurso(linha);
+        if (!nomeLimpo || ehLinhaIgnorada(nomeLimpo)) return;
+
+        if (nomeLimpo.length < 3) return;
+        if (!/[a-zA-ZÀ-ÿ]/.test(nomeLimpo)) return;
+        if (/^(r\$|\d|x\s*de)/i.test(nomeLimpo)) return;
+
+        candidatos.push({
+          original: linha,
+          nomeLimpo
+        });
+      });
+
+      return candidatos;
+    }
+
+    function limparNomeCurso(texto) {
+      let valor = String(texto || '')
+        .replace(/\t+/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+      valor = valor.replace(/^[•\-*0-9.)\s]+/, '').trim();
+
+      valor = valor
+        .replace(/matricule-se/gi, ' ')
+        .replace(/\b\d+\s*trimestres?.*$/i, '')
+        .replace(/\b\d+\s*semestres?.*$/i, '')
+        .replace(/\b\d+\s*meses?.*$/i, '')
+        .replace(/\b\d+\s*horas?.*$/i, '')
+        .replace(/\b\d+\s*h\b.*$/i, '')
+        .replace(/\b1\s*\+\s*\d+\s*x?.*$/i, '')
+        .replace(/\b\d+\s*x\s*de\s*r\$.*$/i, '')
+        .replace(/\br\$.*$/i, '')
+        .replace(/\b\d{2,}\b.*$/i, '')
+        .trim();
+
+      valor = valor
+        .replace(/^curso\s+superior\s+de\s+tecnologia\s+(em|de)\s+/i, '')
+        .replace(/^tecnologia\s+(em|de)\s+/i, '')
+        .replace(/^tecn[oó]logo\s+(em|de)\s+/i, '')
+        .replace(/^gradua[cç][aã]o\s+(em|de)\s+/i, '')
+        .replace(/^curso\s+(de|em)\s+/i, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      valor = valor.replace(/[.,;:]+$/g, '').trim();
+
+      return capitalizarConhecido(valor);
+    }
+
+    function capitalizarConhecido(valor) {
+      const encontrado = encontrarNaBase(valor);
+      if (encontrado) return encontrado.nome;
+
+      return valor
+        .split(' ')
+        .map((palavra, index) => {
+          const minusculas = ['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'no', 'na', 'para'];
+          const lower = palavra.toLowerCase();
+          if (index > 0 && minusculas.includes(lower)) return lower;
+          if (lower === 'rh') return 'RH';
+          if (lower === 'esg') return 'ESG';
+          return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+        })
+        .join(' ');
+    }
+
+    function encontrarNaBase(nome) {
+      const normalOriginal = normalizar(nome);
+      const normalLimpo = normalizar(limparPrefixoTecnologia(nome));
+      if (!normalOriginal && !normalLimpo) return null;
+
+      let exato = baseIndex.find(item => item.termos.some(termo => termo === normalOriginal));
+      if (exato) return exato;
+
+      exato = baseIndex.find(item => item.termos.some(termo => termo === normalLimpo));
+      if (exato) return exato;
+
+      const normal = normalLimpo || normalOriginal;
+      exato = baseIndex.find(item => item.termos.some(termo => normal.includes(termo) || termo.includes(normal)));
+      if (exato && normal.length >= 8) return exato;
+
+      const palavrasEntrada = palavrasChave(normal);
+      if (!palavrasEntrada.length) return null;
+
+      let melhor = null;
+      let melhorScore = 0;
+
+      baseIndex.forEach(item => {
+        const palavrasBase = palavrasChave(item.normal);
+        if (!palavrasBase.length) return;
+
+        const acertos = palavrasBase.filter(p => palavrasEntrada.includes(p)).length;
+        const score = Math.round((acertos / palavrasBase.length) * 100);
+
+        if (score > melhorScore) {
+          melhorScore = score;
+          melhor = item;
+        }
+      });
+
+      return melhorScore >= 86 ? melhor : null;
+    }
+
+    function detectarCursosNoTextoLivre(textoOriginal) {
+      const texto = normalizar(textoOriginal);
+      return baseIndex
+        .filter(item => item.termos.some(termo => termo && contemFrase(texto, termo)))
+        .map(item => ({
+          entrada: item.nome,
+          nomeLimpo: item.nome,
+          periodoConclusao: obterPeriodoConclusaoPDF(item.nome),
+          possui: true
+        }));
+    }
+
+    function removerDuplicadosResultado(lista) {
+      const mapa = new Map();
+
+      lista.forEach(item => {
+        const chave = normalizar(item.nomeLimpo);
+        if (!chave) return;
+
+        if (!mapa.has(chave)) {
+          mapa.set(chave, item);
+          return;
+        }
+
+        const atual = mapa.get(chave);
+        if (!atual.periodoConclusao && item.periodoConclusao) {
+          atual.periodoConclusao = item.periodoConclusao;
+        }
+        if (!atual.possui && item.possui) {
+          mapa.set(chave, { ...item, periodoConclusao: item.periodoConclusao || atual.periodoConclusao });
+        }
+      });
+
+      return [...mapa.values()];
+    }
+
+    const iconeDisponivel = '<svg class="curso-icone" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8.2 14.5 16 5.5"/></svg>';
+    const iconeFora = '<svg class="curso-icone" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg>';
+
+    function linhaCurso(item, periodo) {
+      const nome = escapeHTML(item.nomeLimpo);
+      if (!item.possui) {
+        return `
+          <li class="curso indisponivel" data-possui="nao" data-nome="${nome}" data-periodo="">
+            ${iconeFora}
+            <span class="nome-curso">${nome}</span>
+            <span class="curso-nota">Não está na base</span>
+          </li>`;
+      }
+      return `
+        <li class="curso disponivel" data-possui="sim" data-nome="${nome}" data-periodo="${escapeHTML(periodo || '')}">
+          ${iconeDisponivel}
+          <span class="nome-curso">${nome}</span>
+          <button class="btn btn-link" type="button" onclick="explicarCursoDaLista(this)">Explicar</button>
+        </li>`;
+    }
+
+    function grupoCursos(titulo, itens, extraClasse = '') {
+      if (!itens.length) return '';
+      return `
+        <section class="grupo ${extraClasse}">
+          <h3 class="grupo-titulo">${titulo} <span class="grupo-qtd">${itens.length}</span></h3>
+          <ul class="grupo-lista">${itens.map(({ item, periodo }) => linhaCurso(item, periodo)).join('')}</ul>
+        </section>`;
+    }
+
+    function renderizarResultados(lista) {
+      if (!lista.length) {
+        const temVerificacao = resultadosOriginais.length > 0;
+        $('resultados').innerHTML = `
+          <div class="vazio">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6l5.3 11.6 12.7 1.4-9.5 8.6 2.7 12.4L24 33.6 12.8 40l2.7-12.4L6 19l12.7-1.4z"/><path class="vazio-check" d="M17 25l5 5 12-13"/></svg>
+            <strong>${temVerificacao ? 'Nenhum curso dessa área na lista verificada' : 'Nenhum curso verificado ainda'}</strong>
+            <span>${temVerificacao ? 'Limpe o filtro de curso técnico para ver todos os cursos verificados.' : 'Cole a lista do lead e clique em Verificar cursos. Depois é só copiar a mensagem.'}</span>
+          </div>`;
+        $('resultados').classList.add('is-empty');
+        return;
+      }
+      $('resultados').classList.remove('is-empty');
+
+      const comPeriodo = lista.map(item => ({
+        item,
+        periodo: item.periodoConclusao || (item.possui ? obterPeriodoConclusaoPDF(item.nomeLimpo) : '')
+      }));
+      const disponiveis = comPeriodo.filter(x => x.item.possui);
+      const g12 = disponiveis.filter(x => x.periodo === '12 meses');
+      const g18 = disponiveis.filter(x => x.periodo === '18 meses');
+      const gOutros = disponiveis.filter(x => x.periodo !== '12 meses' && x.periodo !== '18 meses');
+      const fora = comPeriodo.filter(x => !x.item.possui);
+
+      const mensagem = disponiveis.length ? `
+        <div class="mensagem">
+          <p class="mensagem-intro">Essas são as opções de graduação com conclusão mais rápida para você:</p>
+          ${grupoCursos('Cursos com conclusão em 12 meses', g12)}
+          ${grupoCursos('Cursos com conclusão em 18 meses', g18)}
+          ${grupoCursos('Cursos com período não identificado', gOutros)}
+        </div>` : '';
+
+      const foraHTML = fora.length ? `
+        <div class="fora-base">
+          ${grupoCursos('Fora da base (não entram na mensagem)', fora, 'grupo-fora')}
+        </div>` : '';
+
+      $('resultados').innerHTML = mensagem + foraHTML;
+    }
+
+    function atualizarResumo(lista) {
+      const possui = lista.filter(item => item.possui).length;
+      const naoPossui = lista.filter(item => !item.possui).length;
+
+      $('qtdVerificados').textContent = lista.length;
+      $('qtdPossui').textContent = possui;
+      $('qtdNaoPossui').textContent = naoPossui;
+    }
+
+    function mostrarTodos() {
+      resultadosOriginais = cursosPDF.map(nome => ({
+        entrada: nome,
+        nomeLimpo: nome,
+        periodoConclusao: obterPeriodoConclusaoPDF(nome),
+        possui: true
+      }));
+
+      resultadosAtuais = [...resultadosOriginais];
+      $('cursoTecnicoFiltro').value = '';
+      renderizarResultados(resultadosAtuais);
+      atualizarResumo(resultadosAtuais);
+      $('statusSimulador').textContent = 'Mostrando todos os cursos da base de referência.';
+    }
+
+    function copiarDisponiveis() {
+      const disponiveis = [...document.querySelectorAll('#resultados .curso[data-possui="sim"]')]
+        .map(card => {
+          const nome = card.dataset.nome || card.querySelector('.nome-curso')?.textContent.trim() || '';
+          const periodo = card.dataset.periodo || obterPeriodoConclusaoPDF(nome) || '';
+          return nome ? { nome, periodo } : null;
+        })
+        .filter(Boolean);
+
+      if (!disponiveis.length) {
+        avisar('Nenhum curso disponível para copiar. Verifique uma lista primeiro.');
+        return;
+      }
+
+      const cursos12Meses = disponiveis.filter(item => item.periodo === '12 meses');
+      const cursos18Meses = disponiveis.filter(item => item.periodo === '18 meses');
+      const cursosSemPeriodo = disponiveis.filter(item => item.periodo !== '12 meses' && item.periodo !== '18 meses');
+      const blocos = [];
+
+      if (cursos12Meses.length) {
+        blocos.push(
+          'Cursos com conclusão em 12 meses:\n' +
+          cursos12Meses.map(item => `• ${item.nome}`).join('\n')
+        );
+      }
+
+      if (cursos18Meses.length) {
+        blocos.push(
+          'Cursos com conclusão em 18 meses:\n' +
+          cursos18Meses.map(item => `• ${item.nome}`).join('\n')
+        );
+      }
+
+      if (cursosSemPeriodo.length) {
+        blocos.push(
+          'Cursos com período não identificado:\n' +
+          cursosSemPeriodo.map(item => `• ${item.nome}`).join('\n')
+        );
+      }
+
+      copiarTextoSimulador(
+        'Essas são as opções de graduação com conclusão mais rápida para você:\n\n' +
+        blocos.join('\n\n')
+      );
+    }
+
+
+    function aplicarFiltroTecnico(exibirAviso = true) {
+      filtrarPorCursoTecnico(exibirAviso);
+    }
+
+    function obterFonteFiltroTecnico() {
+      return resultadosOriginais.length ? resultadosOriginais : [];
+    }
+
+    function pontuarAreaCursoTecnico(valor, area, dados) {
+      const termos = dados.tecnicos || [];
+      let melhor = 0;
+
+      termos.forEach(termo => {
+        const normalTermo = normalizar(termo);
+        if (!normalTermo) return;
+
+        if (valor === normalTermo) {
+          melhor = Math.max(melhor, 100);
+          return;
+        }
+
+        if (valor.includes(normalTermo) || normalTermo.includes(valor)) {
+          melhor = Math.max(melhor, 85);
+        }
+
+        const palavrasEntrada = palavrasChave(valor);
+        const palavrasTermo = palavrasChave(normalTermo);
+        const comuns = palavrasEntrada.filter(palavra => palavrasTermo.includes(palavra));
+
+        if (comuns.length) {
+          melhor = Math.max(melhor, comuns.length * 22);
+        }
+      });
+
+      return melhor;
+    }
+
+    function identificarAreaCursoTecnico(entrada) {
+      const valor = normalizar(entrada);
+      if (!valor) return '';
+
+      if (tecnicoAreaLookup[valor]) return tecnicoAreaLookup[valor];
+
+      const ranking = Object.entries(areasCursos)
+        .map(([area, dados]) => ({
+          area,
+          score: pontuarAreaCursoTecnico(valor, area, dados)
+        }))
+        .sort((a, b) => b.score - a.score);
+
+      return ranking[0]?.score >= 22 ? ranking[0].area : '';
+    }
+
+    function filtrarPorCursoTecnico(exibirAviso = true) {
+      const entrada = $('cursoTecnicoFiltro').value.trim();
+
+      if (!resultadosOriginais.length) {
+        resultadosAtuais = [];
+        renderizarResultados([]);
+        atualizarResumo([]);
+        $('statusSimulador').textContent = 'Verifique a lista de cursos antes de filtrar por área.';
+        if (entrada && exibirAviso) {
+          avisar('Verifique a lista de cursos antes de filtrar por área.');
+        }
+        return;
+      }
+
+      if (!entrada) {
+        resultadosAtuais = [...resultadosOriginais];
+        renderizarResultados(resultadosAtuais);
+        atualizarResumo(resultadosAtuais);
+        $('statusSimulador').textContent = 'Filtro limpo. Mostrando todos os cursos disponíveis nesta verificação.';
+        return;
+      }
+
+      const area = identificarAreaCursoTecnico(entrada);
+
+      if (!area) {
+        resultadosAtuais = [...resultadosOriginais];
+        renderizarResultados(resultadosAtuais);
+        atualizarResumo(resultadosAtuais);
+        if (exibirAviso) {
+          avisar('Área não identificada. Escreva o técnico completo, ex.: Técnico em Enfermagem.');
+        }
+        $('statusSimulador').textContent = 'Não foi possível identificar a área do curso técnico informado. Mantive a lista verificada do lado esquerdo.';
+        return;
+      }
+
+      const fonte = obterFonteFiltroTecnico();
+      const filtrados = fonte.filter(item => {
+        const encontrado = encontrarNaBase(item.nomeLimpo);
+        const nomeBase = encontrado ? encontrado.nome : item.nomeLimpo;
+        const areasDoCurso = cursoAreaLookup[nomeBase] || [];
+        return areasDoCurso.includes(area);
+      });
+
+      resultadosAtuais = filtrados;
+      renderizarResultados(resultadosAtuais);
+      atualizarResumo(resultadosAtuais);
+
+      const nomeArea = areasCursos[area]?.label || 'Área relacionada';
+      $('statusSimulador').textContent = filtrados.length
+        ? `Curso técnico informado: ${entrada}. Área identificada: ${nomeArea}. ${filtrados.length} curso(s) relacionado(s) encontrado(s) dentro dos cursos verificados.`
+        : `Área identificada: ${nomeArea}. Nenhum curso relacionado foi encontrado dentro dos cursos verificados.`;
+    }
+
+    function obterPeriodoConclusaoPDF(nomeCurso) {
+      const encontrado = encontrarNaBase(nomeCurso);
+      if (!encontrado) return '';
+      return periodosConclusaoPDF[encontrado.nome] || '';
+    }
+
+    function gerarExplicacaoCurso() {
+      const entrada = $('cursoExplicacao').value.trim();
+      if (!entrada) {
+        avisar('Digite o nome do curso para gerar a explicação.'); $('cursoExplicacao').focus();
+        return;
+      }
+
+      const encontrado = encontrarNaBase(entrada);
+      const nomeCurso = encontrado ? encontrado.nome : capitalizarConhecido(limparNomeCurso(entrada));
+      const descricao = encontrado ? explicacoesCursos[encontrado.nome] : '';
+      const periodoConclusao = encontrado ? obterPeriodoConclusaoPDF(encontrado.nome) : '';
+
+      if (!encontrado || !descricao) {
+        explicacaoAtual = '';
+        $('explicacaoCurso').classList.add('vazia');
+        $('explicacaoCurso').textContent = 'Esse curso não está na base de referência. Confira o nome ou use “Ver todos os cursos da base”.';
+        $('statusSimulador').textContent = 'Curso não encontrado na base de referência para gerar explicação.';
+        return;
+      }
+
+      explicacaoAtual = `${nomeCurso}\nPeríodo de conclusão: ${periodoConclusao}.\n${descricao}`;
+      $('explicacaoCurso').classList.remove('vazia');
+      $('explicacaoCurso').textContent = explicacaoAtual;
+      $('statusSimulador').textContent = `Explicação gerada para: ${nomeCurso}.`;
+    }
+
+    function copiarExplicacaoCurso() {
+      if (!explicacaoAtual) {
+        avisar('Gere a explicação antes de copiar.');
+        return;
+      }
+
+      copiarTextoSimulador(explicacaoAtual).then(() => toast('Explicação copiada.'));
+    }
+
+    function limparExplicacaoCurso() {
+      explicacaoAtual = '';
+      $('cursoExplicacao').value = '';
+      $('explicacaoCurso').classList.add('vazia');
+      $('explicacaoCurso').textContent = 'Após o lead escolher o curso, cole o nome aqui para gerar uma explicação pronta.';
+    }
+
+    function limparTudo() {
+      imagemAtual = null;
+      resultadosOriginais = [];
+      resultadosAtuais = [];
+
+      $('arquivoPrint').value = '';
+      $('previewPrint').src = '';
+      $('previewPrint').style.display = 'none';
+      $('placeholderPrint').style.display = 'block';
+      $('textoLido').value = '';
+      $('barra').style.display = 'none';
+      $('barra').querySelector('span').style.width = '0%';
+      $('cursoTecnicoFiltro').value = '';
+      $('statusSimulador').textContent = 'Cole a lista de cursos e clique em Verificar cursos.';
+      limparExplicacaoCurso();
+
+      atualizarResumo([]);
+      renderizarResultados([]);
+      $('textoLido').focus();
+    }
+
+    async function copiarTextoSimulador(texto) {
+      try {
+        await navigator.clipboard.writeText(texto);
+      } catch {
+        const temporario = document.createElement('textarea');
+        temporario.value = texto;
+        document.body.appendChild(temporario);
+        temporario.select();
+        document.execCommand('copy');
+        temporario.remove();
+      }
+
+      toast('Mensagem copiada. É só colar na conversa.');
+    }
+
+    function toast(mensagem, tipo = 'ok') {
+      const el = $('toastSimulador');
+      el.textContent = mensagem;
+      el.dataset.tipo = tipo;
+      el.classList.add('visivel');
+      clearTimeout(window.toastTimerSimulador);
+      window.toastTimerSimulador = setTimeout(() => el.classList.remove('visivel'), tipo === 'aviso' ? 3200 : 1800);
+    }
+
+    function avisar(mensagem) {
+      toast(mensagem, 'aviso');
+    }
+
+    function ehLinhaIgnorada(linha) {
+      const l = normalizar(linha);
+      if (!l) return true;
+      if (l === 'matricule-se') return true;
+      if (/^r\s*\$/.test(l)) return true;
+      if (/^\d+$/.test(l)) return true;
+      if (/^\d+\s*(trimestres|semestres|meses|horas|h)$/.test(l)) return true;
+      if (/^1\s*\+\s*\d+/.test(l)) return true;
+      if (/^\d+\s*x\s*de/.test(l)) return true;
+      return false;
+    }
+
+    function limparPrefixoTecnologia(nome) {
+      return String(nome || '')
+        .replace(/^curso\s+superior\s+de\s+tecnologia\s+(em|de)\s+/i, '')
+        .replace(/^tecnologia\s+(em|de)\s+/i, '')
+        .replace(/^tecn[oó]logo\s+(em|de)\s+/i, '')
+        .trim();
+    }
+
+    function palavrasChave(textoNormal) {
+      const stopwords = new Set([
+        'de', 'da', 'do', 'das', 'dos', 'e', 'em', 'no', 'na', 'para', 'com',
+        'curso', 'cursos', 'tecnologo', 'tecnologos', 'tecnologia', 'superior',
+        'obrigatorio', 'carteirinha', 'funcional'
+      ]);
+
+      return String(textoNormal || '')
+        .split(' ')
+        .map(p => p.trim())
+        .filter(p => p.length > 2 && !stopwords.has(p));
+    }
+
+    function contemFrase(texto, frase) {
+      const escaped = frase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp(`(^|\\s)${escaped}(\\s|$)`, 'i').test(texto);
+    }
+
+    function normalizar(texto) {
+      return String(texto || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[–—]/g, '-')
+        .replace(/[^a-z0-9\s+.-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function escapeHTML(texto) {
+      return String(texto || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+
+  // autocompletar nomes da base no "Explicar um curso"
+  (function () {
+    const dl = document.getElementById('listaCursosBase');
+    if (dl) dl.innerHTML = cursosPDF.map(n => `<option value="${escapeHTML(n)}"></option>`).join('');
+  })();
+  renderizarResultados([]);
+  renderizarPosEstagio();
+</script>
+</body>
+</html>
